@@ -108,76 +108,110 @@ export function Hero() {
 
       {/* Main Content */}
       <div className="container relative z-10 mx-auto px-4 md:px-6 my-auto">
-        <div className="max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            {/* Tag Badge */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-teal-500/10 border border-teal-400/30 backdrop-blur-md mb-6"
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div className="lg:col-span-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <Sparkles className="w-4 h-4 text-teal-400 animate-pulse" />
-              <span className="text-teal-300 text-xs md:text-sm font-bold tracking-widest uppercase">
-                INDIA'S PREMIER SEAFOOD EXPORTER
-              </span>
-            </motion.div>
-
-            {/* Headline */}
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight mb-6 drop-shadow-lg">
-              Delivering Pristine Ocean Wealth To <span className="bg-gradient-to-r from-teal-400 via-emerald-300 to-teal-200 bg-clip-text text-transparent">Global Markets.</span>
-            </h1>
-
-            {/* Subheading */}
-            <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 max-w-2xl leading-relaxed">
-              VISHRA GLOBAL EXPORTS delivers export-ready Vannamei Shrimp, Black Tiger, Rohu, Catla, Squid, and Premium Indian Rice from Eluru, Andhra Pradesh. Certified processing and global shipping precision.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button 
-                size="lg" 
-                className="text-base font-bold h-14 px-8 bg-teal-500 hover:bg-teal-400 text-[#141414] shadow-lg shadow-teal-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
-                onClick={() => window.location.href = '/products'}
-              >
-                <ShoppingBag className="mr-2.5 w-5 h-5" />
-                Browse Products
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="text-base font-bold h-14 px-8 bg-white/5 backdrop-blur-md text-white border-white/20 hover:bg-white/15 hover:border-white/40 transition-all duration-300"
-                onClick={() => window.open('https://wa.me/919121297999', '_blank')}
-              >
-                <FaWhatsapp className="mr-2.5 w-5 h-5 text-emerald-400" />
-                Instant WhatsApp Quote
-              </Button>
-            </div>
-
-            {/* Active Cart Counter Indicator if items exist */}
-            {cart.length > 0 && (
+              {/* Tag Badge */}
               <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="inline-flex items-center gap-3 p-3 px-5 rounded-2xl bg-[#181818] border border-teal-500/30 text-teal-200 text-xs font-semibold backdrop-blur-md"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-teal-500/10 border border-teal-400/30 backdrop-blur-md mb-6"
               >
-                <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
-                <span>You have <strong>{totalItemsCount} item(s)</strong> in your cart</span>
-                <button 
-                  onClick={() => window.location.href = '/products'} 
-                  className="underline text-teal-400 hover:text-white font-bold ml-2"
-                >
-                  View Cart
-                </button>
+                <Sparkles className="w-4 h-4 text-teal-400 animate-pulse" />
+                <span className="text-teal-300 text-xs md:text-sm font-bold tracking-widest uppercase">
+                  INDIA'S PREMIER SEAFOOD & AGRI EXPORTER
+                </span>
               </motion.div>
-            )}
-          </motion.div>
+
+              {/* Headline */}
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight mb-6 drop-shadow-lg">
+                Delivering Pristine Ocean Wealth To <span className="bg-gradient-to-r from-teal-400 via-emerald-300 to-teal-200 bg-clip-text text-transparent">Global Markets.</span>
+              </h1>
+
+              {/* Subheading */}
+              <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 max-w-2xl leading-relaxed">
+                VISHRA GLOBAL EXPORTS delivers export-ready Vannamei Shrimp, Black Tiger, Rohu, Catla, Squid, and Premium Indian Rice from Eluru, Andhra Pradesh. Certified processing and global shipping precision.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <Button 
+                  size="lg" 
+                  className="text-base font-bold h-14 px-8 bg-teal-500 hover:bg-teal-400 text-[#141414] shadow-lg shadow-teal-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
+                  onClick={() => window.location.href = '/products'}
+                >
+                  <ShoppingBag className="mr-2.5 w-5 h-5" />
+                  Browse Products
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="text-base font-bold h-14 px-8 bg-white/5 backdrop-blur-md text-white border-white/20 hover:bg-white/15 hover:border-white/40 transition-all duration-300"
+                  onClick={() => window.open('https://wa.me/919121297999', '_blank')}
+                >
+                  <FaWhatsapp className="mr-2.5 w-5 h-5 text-emerald-400" />
+                  Instant WhatsApp Quote
+                </Button>
+              </div>
+
+              {/* Active Cart Counter Indicator if items exist */}
+              {cart.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="inline-flex items-center gap-3 p-3 px-5 rounded-2xl bg-[#181818] border border-teal-500/30 text-teal-200 text-xs font-semibold backdrop-blur-md"
+                >
+                  <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
+                  <span>You have <strong>{totalItemsCount} item(s)</strong> in your cart</span>
+                  <button 
+                    onClick={() => window.location.href = '/products'} 
+                    className="underline text-teal-400 hover:text-white font-bold ml-2"
+                  >
+                    View Cart
+                  </button>
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+
+          {/* Prominent White Logo Showcase Container on the side */}
+          <div className="lg:col-span-4 flex justify-center lg:justify-end">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative p-8 md:p-10 rounded-3xl bg-[#181818]/60 border border-teal-500/30 shadow-2xl backdrop-blur-xl group hover:border-teal-400/60 transition-all flex flex-col items-center text-center"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/10 via-transparent to-emerald-500/10 rounded-3xl pointer-events-none" />
+              
+              <div className="p-4 rounded-2xl bg-transparent mb-4 transform group-hover:scale-105 transition-transform">
+                <img 
+                  src="/logo.png" 
+                  alt="VISHRA GLOBAL EXPORTS" 
+                  className="h-28 md:h-36 w-auto object-contain brightness-0 invert drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]" 
+                />
+              </div>
+
+              <div className="space-y-1">
+                <h3 className="text-xl font-black tracking-tight text-white">VISHRA GLOBAL EXPORTS</h3>
+                <p className="text-xs font-extrabold tracking-widest text-teal-400 uppercase">OFFICIAL EXPORT SEAL</p>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-white/10 w-full flex items-center justify-center gap-2 text-xs text-slate-300 font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Certified Global Standard</span>
+              </div>
+            </motion.div>
+          </div>
+
         </div>
       </div>
 
