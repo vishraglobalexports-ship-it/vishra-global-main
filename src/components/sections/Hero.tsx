@@ -4,9 +4,11 @@ import { ArrowRight, ShieldCheck, Globe2, Anchor, Award, ShoppingBag, Sparkles }
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '@/context/CartContext';
 import { GiShrimp, GiTropicalFish } from 'react-icons/gi';
+import { useLocation } from 'wouter';
 
 export function Hero() {
   const { cart, totalItemsCount } = useCart();
+  const [, setLocation] = useLocation();
 
   const highlights = [
     { icon: Globe2, label: 'Global Shipping', desc: '50+ Export Destinations' },
@@ -142,7 +144,7 @@ export function Hero() {
               <Button 
                 size="lg" 
                 className="text-base font-bold h-14 px-8 bg-teal-500 hover:bg-teal-400 text-[#141414] shadow-lg shadow-teal-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
-                onClick={() => window.location.href = '/products'}
+                onClick={() => setLocation('/products')}
               >
                 <ShoppingBag className="mr-2.5 w-5 h-5" />
                 Browse Products
@@ -170,7 +172,7 @@ export function Hero() {
                 <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
                 <span>You have <strong>{totalItemsCount} item(s)</strong> in your cart</span>
                 <button 
-                  onClick={() => window.location.href = '/products'} 
+                  onClick={() => setLocation('/products')} 
                   className="underline text-teal-400 hover:text-white font-bold ml-2"
                 >
                   View Cart
