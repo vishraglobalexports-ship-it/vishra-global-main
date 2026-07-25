@@ -206,18 +206,24 @@ export function Products() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
+              className="space-y-16"
             >
-              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
-                <div className="p-3 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
-                  <Fish className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-extrabold text-white">Seafood Export Division</h3>
-                  <p className="text-xs md:text-sm text-slate-400">Pristine marine & freshwater shrimp, fish, and squid from Eluru aquaculture hubs</p>
-                </div>
-              </div>
-
-              {renderProductGrid(getSeafoodProducts())}
+              {/* Group seafood by subcategory */}
+              {Array.from(new Set(getSeafoodProducts().map(p => p.subcategory || 'Seafood Products'))).map((subcat) => {
+                const subProducts = getSeafoodProducts().filter(p => (p.subcategory || 'Seafood Products') === subcat);
+                return (
+                  <div key={subcat} className="space-y-6">
+                    <div className="flex items-center gap-3 pb-3 border-b border-teal-500/20">
+                      <div className="w-2.5 h-7 rounded-full bg-teal-400" />
+                      <h4 className="text-xl md:text-2xl font-extrabold text-white">{subcat}</h4>
+                      <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                        {subProducts.length} type(s)
+                      </span>
+                    </div>
+                    {renderProductGrid(subProducts)}
+                  </div>
+                );
+              })}
             </motion.div>
           ) : (
             <motion.div
@@ -226,18 +232,24 @@ export function Products() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.3 }}
+              className="space-y-16"
             >
-              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
-                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  <Wheat className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-2xl md:text-3xl font-extrabold text-white">Agricultural Export Division</h3>
-                  <p className="text-xs md:text-sm text-slate-400">Premium Indian Rice, Spices, Millets, and Pulses sourced directly from fertile river belts</p>
-                </div>
-              </div>
-
-              {renderProductGrid(getAgriProducts())}
+              {/* Group agri by subcategory */}
+              {Array.from(new Set(getAgriProducts().map(p => p.subcategory || 'Agro Products'))).map((subcat) => {
+                const subProducts = getAgriProducts().filter(p => (p.subcategory || 'Agro Products') === subcat);
+                return (
+                  <div key={subcat} className="space-y-6">
+                    <div className="flex items-center gap-3 pb-3 border-b border-amber-500/20">
+                      <div className="w-2.5 h-7 rounded-full bg-amber-400" />
+                      <h4 className="text-xl md:text-2xl font-extrabold text-white">{subcat}</h4>
+                      <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        {subProducts.length} type(s)
+                      </span>
+                    </div>
+                    {renderProductGrid(subProducts)}
+                  </div>
+                );
+              })}
             </motion.div>
           )}
         </AnimatePresence>

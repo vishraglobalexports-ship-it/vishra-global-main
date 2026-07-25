@@ -88,14 +88,15 @@ function AddProductPanel({
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
   const [category, setCategory] = useState<'seafood' | 'agri'>('seafood');
+  const [subcategory, setSubcategory] = useState('');
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   const canSave = name.trim() && description.trim() && image.trim();
 
   const handleSave = () => {
     if (!canSave) return;
-    onAdd({ name: name.trim(), description: description.trim(), image: image.trim(), category });
-    setName(''); setDescription(''); setImage(''); setCategory('seafood');
+    onAdd({ name: name.trim(), description: description.trim(), image: image.trim(), category, subcategory: subcategory.trim() || undefined });
+    setName(''); setDescription(''); setImage(''); setCategory('seafood'); setSubcategory('');
   };
 
   return (
@@ -155,9 +156,21 @@ function AddProductPanel({
           />
         </div>
 
+        {/* Subcategory */}
+        <div>
+          <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Section / Subcategory</label>
+          <input
+            type="text"
+            value={subcategory}
+            onChange={(e) => setSubcategory(e.target.value)}
+            placeholder="e.g. Shrimp & Prawns, Rice Varieties, Spices & Seasonings"
+            className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
+          />
+        </div>
+
         {/* Category Selector */}
         <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Category</label>
+          <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Division / Category</label>
           <div className="relative">
             <button 
               onClick={() => setCategoryOpen(!categoryOpen)}
@@ -254,7 +267,7 @@ export default function AdminPage() {
   };
 
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editForm, setEditForm] = useState<{ name: string; description: string; image: string; category: 'seafood' | 'agri' }>({ name: '', description: '', image: '', category: 'seafood' });
+  const [editForm, setEditForm] = useState<{ name: string; description: string; image: string; category: 'seafood' | 'agri'; subcategory: string }>({ name: '', description: '', image: '', category: 'seafood', subcategory: '' });
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
@@ -262,12 +275,12 @@ export default function AdminPage() {
 
   const startEdit = (product: Product) => {
     setEditingId(product.id);
-    setEditForm({ name: product.name, description: product.description, image: product.image, category: product.category });
+    setEditForm({ name: product.name, description: product.description, image: product.image, category: product.category, subcategory: product.subcategory || '' });
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditForm({ name: '', description: '', image: '', category: 'seafood' });
+    setEditForm({ name: '', description: '', image: '', category: 'seafood', subcategory: '' });
     setCategoryDropOpen(false);
   };
 
@@ -278,6 +291,7 @@ export default function AdminPage() {
       description: editForm.description.trim(),
       image: editForm.image.trim(),
       category: editForm.category,
+      subcategory: editForm.subcategory.trim() || undefined,
     });
     cancelEdit();
   };
@@ -358,9 +372,21 @@ export default function AdminPage() {
               />
             </div>
 
+            {/* Subcategory */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Section / Subcategory</label>
+              <input
+                type="text"
+                value={editForm.subcategory}
+                onChange={(e) => setEditForm((f) => ({ ...f, subcategory: e.target.value }))}
+                placeholder="e.g. Shrimp & Prawns, Rice Varieties, Spices & Seasonings"
+                className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
+              />
+            </div>
+
             {/* Category */}
             <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Category</label>
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Division / Category</label>
               <div className="relative">
                 <button 
                   onClick={() => setCategoryDropOpen(!categoryDropOpen)}
