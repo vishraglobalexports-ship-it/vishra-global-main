@@ -23,45 +23,12 @@ export function Contact() {
   
   const { register, handleSubmit, getValues, formState: { errors } } = useForm<ContactFormInputs>();
 
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-
-  const onSubmit = async () => {
+  const onSubmit = (e?: React.BaseSyntheticEvent) => {
     setIsSubmitting(true);
-    setSubmitStatus('idle');
+    setSubmitStatus('success');
+
+    // 1. Format WhatsApp message
     const formData = getValues();
-
-    try {
-      // 1. Submit email via FormSubmit AJAX endpoint
-      const response = await fetch("https://formsubmit.co/ajax/vishraglobalexports@gmail.com", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          _subject: `New Export Enquiry from ${formData.name}`,
-          _template: "table",
-          "Full Name": formData.name,
-          "Company": formData.company,
-          "Email": formData.email,
-          "Phone": formData.phone,
-          "Product": formData.product,
-          "Message": formData.message
-        })
-      });
-
-      if (response.ok) {
-        setSubmitStatus('success');
-      } else {
-        setSubmitStatus('error');
-      }
-    } catch {
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
-    }
-
-    // 2. Open WhatsApp link for instant notification
     let waMessage = `Hello VISHRA GLOBAL EXPORTS!\n\n*NEW WEBSITE ENQUIRY*\n`;
     waMessage += `👤 *Name:* ${formData.name.trim()}\n`;
     waMessage += `🏢 *Company:* ${formData.company.trim()}\n`;
@@ -70,7 +37,13 @@ export function Contact() {
     waMessage += `📦 *Product of Interest:* ${formData.product}\n`;
     waMessage += `💬 *Message:* ${formData.message.trim()}\n`;
 
+    // 2. Open WhatsApp in background/tab
     window.open(`https://wa.me/919121297999?text=${encodeURIComponent(waMessage)}`, '_blank');
+
+    // 3. Native Form POST to FormSubmit.co for email delivery
+    if (formRef.current) {
+      formRef.current.submit();
+    }
   };
 
   const fullAddressText = "Opp St.Theresa Degree College, Kata Subbarao Thota, Eluru, Andhra Pradesh - 534003, India";
