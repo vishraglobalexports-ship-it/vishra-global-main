@@ -104,8 +104,6 @@ export function Hero() {
         {/* Dark gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#181818]/95 via-[#202020]/90 to-[#252525]/80" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#202020] via-transparent to-[#181818]/80" />
-        {/* Teal radial glow */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-teal-500/15 rounded-full blur-3xl" />
       </div>
 
       {/* Main Content */}
