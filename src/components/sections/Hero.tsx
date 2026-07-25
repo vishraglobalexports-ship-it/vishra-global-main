@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Fish, Wheat, ShieldCheck, Globe2, Anchor, Award, Sparkles, ArrowRight } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Globe2, Anchor, Award, ShoppingBag, Sparkles } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useCart } from '@/context/CartContext';
 import { GiShrimp, GiTropicalFish } from 'react-icons/gi';
@@ -8,20 +8,7 @@ import { useLocation } from 'wouter';
 
 export function Hero() {
   const { cart, totalItemsCount } = useCart();
-  const [location, setLocation] = useLocation();
-
-  const scrollToSection = (id: string) => {
-    if (location !== '/') {
-      setLocation('/');
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        el?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      const el = document.getElementById(id);
-      el?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  const [, setLocation] = useLocation();
 
   const highlights = [
     { icon: Globe2, label: 'Global Shipping', desc: '50+ Export Destinations' },
@@ -150,26 +137,26 @@ export function Hero() {
               Export-ready Vannamei Shrimp, Black Tiger, Freshwater Fish & Premium Rice directly from Eluru, Andhra Pradesh to global markets.
             </p>
 
-            {/* CTA Buttons - Two Divisions: Seafood and Agro */}
+            {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <Button 
                 size="lg" 
-                className="text-base font-bold h-14 px-7 bg-teal-500 hover:bg-teal-400 text-[#141414] shadow-lg shadow-teal-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
-                onClick={() => scrollToSection('seafood-division')}
+                className="text-base font-bold h-14 px-8 bg-teal-500 hover:bg-teal-400 text-[#141414] shadow-lg shadow-teal-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
+                onClick={() => setLocation('/products')}
               >
-                <Fish className="mr-2.5 w-5 h-5" />
-                Seafood Export Division
-                <ArrowRight className="ml-2 w-4 h-4" />
+                <ShoppingBag className="mr-2.5 w-5 h-5" />
+                Browse Products
+                <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
 
               <Button 
                 size="lg" 
-                className="text-base font-bold h-14 px-7 bg-amber-500 hover:bg-amber-400 text-[#141414] shadow-lg shadow-amber-500/25 transition-all duration-300 transform hover:-translate-y-0.5"
-                onClick={() => scrollToSection('agro-division')}
+                variant="outline" 
+                className="text-base font-bold h-14 px-8 bg-white/5 backdrop-blur-md text-white border-white/20 hover:bg-white/15 hover:border-white/40 transition-all duration-300"
+                onClick={() => window.open('https://wa.me/919121297999', '_blank')}
               >
-                <Wheat className="mr-2.5 w-5 h-5" />
-                Agro Products Export Division
-                <ArrowRight className="ml-2 w-4 h-4" />
+                <FaWhatsapp className="mr-2.5 w-5 h-5 text-emerald-400" />
+                Instant WhatsApp Quote
               </Button>
             </div>
 

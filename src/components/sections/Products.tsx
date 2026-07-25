@@ -139,49 +139,104 @@ export function Products() {
     </div>
   );
 
+  // Tab state: 'seafood' or 'agri'
+  const [activeTab, setActiveTab] = useState<'seafood' | 'agri'>('seafood');
+
   return (
     <section id="products" className="py-24 bg-[#202020] text-white relative">
       <div className="container mx-auto px-4 md:px-6">
         
         {/* Main Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-teal-400 font-bold text-xs tracking-widest uppercase block mb-2">EXPORT READY PRODUCT RANGE</span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Our Export Offerings</h2>
           <div className="w-20 h-1 bg-teal-500 mx-auto mb-6"></div>
-          <p className="text-slate-300 text-lg">
-            Direct export sourcing from Andhra Pradesh. Certified processing, moisture control, and global shipping standards.
+          <p className="text-slate-300 text-lg mb-8">
+            Direct export sourcing from Andhra Pradesh. Select a division below to explore our offerings.
           </p>
-        </div>
 
-        {/* SECTION 1: SEAFOOD PRODUCTS */}
-        <div id="seafood-division" className="mb-20 scroll-mt-28">
-          <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
-            <div className="p-3 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
-              <Fish className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-2xl md:text-3xl font-extrabold text-white">Seafood Export Division</h3>
-              <p className="text-xs md:text-sm text-slate-400">Pristine marine & freshwater shrimp, fish, and squid from Eluru aquaculture hubs</p>
-            </div>
+          {/* TWO DIVISION BUTTON TOGGLES */}
+          <div className="inline-flex p-1.5 rounded-2xl bg-[#181818] border border-white/10 shadow-2xl gap-2 max-w-full overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('seafood')}
+              className={`flex items-center gap-2.5 px-6 sm:px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                activeTab === 'seafood'
+                  ? 'bg-teal-500 text-[#141414] shadow-lg shadow-teal-500/25 scale-[1.02]'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Fish className={`w-5 h-5 ${activeTab === 'seafood' ? 'text-[#141414]' : 'text-teal-400'}`} />
+              Seafood Division
+              <span className={`ml-1 px-2 py-0.5 text-xs rounded-full font-black ${
+                activeTab === 'seafood' ? 'bg-[#141414]/20 text-[#141414]' : 'bg-teal-500/10 text-teal-400'
+              }`}>
+                {getSeafoodProducts().length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('agri')}
+              className={`flex items-center gap-2.5 px-6 sm:px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap cursor-pointer ${
+                activeTab === 'agri'
+                  ? 'bg-amber-400 text-[#141414] shadow-lg shadow-amber-400/25 scale-[1.02]'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Wheat className={`w-5 h-5 ${activeTab === 'agri' ? 'text-[#141414]' : 'text-amber-400'}`} />
+              Agro Products
+              <span className={`ml-1 px-2 py-0.5 text-xs rounded-full font-black ${
+                activeTab === 'agri' ? 'bg-[#141414]/20 text-[#141414]' : 'bg-amber-400/10 text-amber-400'
+              }`}>
+                {getAgriProducts().length}
+              </span>
+            </button>
           </div>
-
-          {renderProductGrid(getSeafoodProducts())}
         </div>
 
-        {/* SECTION 2: AGRICULTURAL PRODUCTS */}
-        <div id="agro-division" className="scroll-mt-28">
-          <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
-            <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <Wheat className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-2xl md:text-3xl font-extrabold text-white">Agricultural Export Division</h3>
-              <p className="text-xs md:text-sm text-slate-400">Premium Indian Rice, Spices, Millets, and Pulses sourced directly from fertile river belts</p>
-            </div>
-          </div>
+        {/* DISPLAY ACTIVE DIVISION PRODUCTS */}
+        <AnimatePresence mode="wait">
+          {activeTab === 'seafood' ? (
+            <motion.div
+              key="seafood-tab"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
+                <div className="p-3 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                  <Fish className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-extrabold text-white">Seafood Export Division</h3>
+                  <p className="text-xs md:text-sm text-slate-400">Pristine marine & freshwater shrimp, fish, and squid from Eluru aquaculture hubs</p>
+                </div>
+              </div>
 
-          {renderProductGrid(getAgriProducts())}
-        </div>
+              {renderProductGrid(getSeafoodProducts())}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="agri-tab"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
+                <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <Wheat className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-extrabold text-white">Agricultural Export Division</h3>
+                  <p className="text-xs md:text-sm text-slate-400">Premium Indian Rice, Spices, Millets, and Pulses sourced directly from fertile river belts</p>
+                </div>
+              </div>
+
+              {renderProductGrid(getAgriProducts())}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
 
