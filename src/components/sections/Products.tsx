@@ -156,18 +156,20 @@ export function Products() {
           </p>
 
           {/* TWO DIVISION BUTTON TOGGLES */}
-          <div className="inline-flex p-1.5 rounded-2xl bg-[#181818] border border-white/10 shadow-2xl gap-2 max-w-full overflow-x-auto">
+          <div className="inline-flex p-1.5 rounded-2xl bg-[#181818] border border-white/10 shadow-2xl gap-2 max-w-full">
             <button
               onClick={() => setActiveTab('seafood')}
-              className={`flex items-center gap-2.5 px-6 sm:px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 sm:px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap cursor-pointer ${
                 activeTab === 'seafood'
                   ? 'bg-teal-500 text-[#141414] shadow-lg shadow-teal-500/25 scale-[1.02]'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
-              <Fish className={`w-5 h-5 ${activeTab === 'seafood' ? 'text-[#141414]' : 'text-teal-400'}`} />
-              Seafood Division
-              <span className={`ml-1 px-2 py-0.5 text-xs rounded-full font-black ${
+              <Fish className={`w-5 h-5 shrink-0 ${activeTab === 'seafood' ? 'text-[#141414]' : 'text-teal-400'}`} />
+              <span className={activeTab === 'seafood' ? 'inline' : 'hidden sm:inline'}>
+                Seafood Division
+              </span>
+              <span className={`px-2 py-0.5 text-xs rounded-full font-black ${
                 activeTab === 'seafood' ? 'bg-[#141414]/20 text-[#141414]' : 'bg-teal-500/10 text-teal-400'
               }`}>
                 {getSeafoodProducts().length}
@@ -176,15 +178,17 @@ export function Products() {
 
             <button
               onClick={() => setActiveTab('agri')}
-              className={`flex items-center gap-2.5 px-6 sm:px-8 py-3.5 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 sm:px-8 py-3 rounded-xl font-bold text-sm transition-all duration-300 whitespace-nowrap cursor-pointer ${
                 activeTab === 'agri'
                   ? 'bg-amber-400 text-[#141414] shadow-lg shadow-amber-400/25 scale-[1.02]'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
               }`}
             >
-              <Wheat className={`w-5 h-5 ${activeTab === 'agri' ? 'text-[#141414]' : 'text-amber-400'}`} />
-              Agro Products
-              <span className={`ml-1 px-2 py-0.5 text-xs rounded-full font-black ${
+              <Wheat className={`w-5 h-5 shrink-0 ${activeTab === 'agri' ? 'text-[#141414]' : 'text-amber-400'}`} />
+              <span className={activeTab === 'agri' ? 'inline' : 'hidden sm:inline'}>
+                Agro Products
+              </span>
+              <span className={`px-2 py-0.5 text-xs rounded-full font-black ${
                 activeTab === 'agri' ? 'bg-[#141414]/20 text-[#141414]' : 'bg-amber-400/10 text-amber-400'
               }`}>
                 {getAgriProducts().length}
