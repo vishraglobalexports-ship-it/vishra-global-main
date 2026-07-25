@@ -6,8 +6,12 @@ export function Footer() {
           
           <div className="col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-xl bg-white shadow-md inline-flex items-center justify-center">
-                <img src="/logo.png" alt="VG Exports Logo" className="h-10 w-auto object-contain" />
+              <div className="bg-transparent inline-flex items-center justify-center">
+                <img 
+                  src="/logo.png" 
+                  alt="VG Exports Logo" 
+                  className="h-11 w-auto object-contain brightness-0 invert drop-shadow-md" 
+                />
               </div>
               <div>
                 <h2 className="font-extrabold text-xl tracking-tight text-white leading-none">
