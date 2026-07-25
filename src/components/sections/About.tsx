@@ -206,6 +206,51 @@ export function About() {
         </div>
       </section>
 
+      {/* LEADERSHIP & DIRECTOR PROFILE SECTION */}
+      <section className="py-24 border-b border-white/10 bg-[#1a1a1a]">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-cyan-400 font-bold text-xs tracking-widest uppercase block mb-2">COMPANY LEADERSHIP</span>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Director's Profile & Vision</h2>
+            <div className="w-20 h-1 bg-cyan-500 mx-auto mb-6"></div>
+            <p className="text-slate-400 text-base">
+              Guided by strategic vision, global standard compliance, and commitment to sustainable seafood exports.
+            </p>
+          </div>
+
+          <div className="max-w-4xl mx-auto bg-[#242424] rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div className="w-48 h-48 md:w-56 md:h-56 shrink-0 rounded-2xl overflow-hidden border-2 border-cyan-400/40 shadow-xl relative">
+              <img 
+                src="/director.jpeg" 
+                alt="R.J.SHEPHERD - DIRECTOR" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            </div>
+
+            <div className="space-y-4 text-center md:text-left">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">R.J.SHEPHERD</h3>
+                <span className="text-xs font-extrabold tracking-widest text-cyan-400 uppercase block mt-1">DIRECTOR, VISHRA GLOBAL EXPORTS</span>
+              </div>
+
+              <p className="text-slate-300 text-sm md:text-base leading-relaxed">
+                "Under our leadership at <strong>VISHRA GLOBAL EXPORTS</strong>, we bridge Andhra Pradesh's world-renowned aquaculture harvests from Eluru directly to global tables. We maintain strict adherence to international quality protocols, sustainable farming ethics, and seamless supply chain logistics."
+              </p>
+
+              <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
+                <span className="text-xs px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 font-bold">
+                  Aquaculture Visionary
+                </span>
+                <span className="text-xs px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 font-bold">
+                  Global Trade Operations
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* 4. PROCESSING & QUALITY ASSURANCE WORKFLOW */}
       <section className="py-24 border-b border-white/10 bg-[#1e1e1e]">
         <div className="container mx-auto px-4 md:px-6">

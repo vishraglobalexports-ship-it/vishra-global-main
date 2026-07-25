@@ -96,6 +96,13 @@ export function Products() {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#202020] via-transparent to-transparent opacity-60" />
+                    <div className="absolute top-3 left-3 bg-[#181818]/60 backdrop-blur-md p-1.5 rounded-lg border border-white/10 shadow-md">
+                      <img 
+                        src="/logo.png" 
+                        alt="Vishra Watermark" 
+                        className="h-6 w-auto object-contain brightness-0 invert opacity-90" 
+                      />
+                    </div>
                     {inCart && (
                       <span className="absolute top-3 right-3 bg-teal-400 text-[#141414] font-black text-xs px-3 py-1 rounded-full shadow-md">
                         In Cart
