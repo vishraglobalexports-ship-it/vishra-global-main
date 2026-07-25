@@ -135,11 +135,11 @@ export function About() {
               </h2>
               
               <p className="text-slate-300 text-base leading-relaxed">
-                <strong>VISHRA GLOBAL EXPORTS</strong> operates directly out of <strong>Eluru, Andhra Pradesh</strong>, situated in the fertile river delta region between the Godavari and Krishna rivers. Eluru is globally celebrated as the heartland of Indian commercial aquaculture, producing world-class <em>Vannamei Shrimp</em>, <em>Black Tiger Shrimp</em>, <em>Rohu</em>, and <em>Catla fish</em>.
+                <strong>VISHRA GLOBAL EXPORTS</strong> operates directly out of <strong>Eluru, Andhra Pradesh</strong>, situated in the fertile river delta region between the Godavari and Krishna rivers. Eluru is globally celebrated as the heartland of Indian commercial aquaculture (producing <em>Vannamei Shrimp</em>, <em>Black Tiger Shrimp</em>, <em>Rohu</em>, and <em>Catla fish</em>) as well as Andhra Pradesh's richest agricultural belt (yielding <em>Sona Masoori Rice, Guntur Spices, Organic Millets, and Pulses</em>).
               </p>
 
               <p className="text-slate-300 text-base leading-relaxed">
-                With <strong>Andhra Pradesh contributing over 65% of India's total cultivated marine & freshwater exports</strong>, our strategic presence in Eluru gives us direct access to thousands of certified aqua farms, state-of-the-art IQF processing units, and direct seaport corridors via <strong>Visakhapatnam (Vizag) Port</strong> and <strong>Krishnapatnam Port</strong>.
+                With <strong>Andhra Pradesh contributing over 65% of India's total cultivated marine & freshwater exports</strong> and leading national paddy rice yields, our strategic presence in Eluru gives us direct access to certified aqua farms, agricultural grain sorting units, and direct seaport corridors via <strong>Visakhapatnam (Vizag) Port</strong> and <strong>Krishnapatnam Port</strong>.
               </p>
 
               <div className="space-y-3 pt-2">

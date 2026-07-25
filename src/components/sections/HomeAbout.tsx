@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MapPin, ArrowRight, ShieldCheck, Award } from 'lucide-react';
+import { MapPin, ArrowRight, ShieldCheck, Award, Fish, Wheat } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
 
@@ -9,7 +9,7 @@ export function HomeAbout() {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
           
-          {/* Image side */}
+          {/* Dual Image Collage */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -17,17 +17,38 @@ export function HomeAbout() {
             transition={{ duration: 0.6 }}
             className="w-full lg:w-1/2 relative"
           >
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl border border-white/10">
-              <img 
-                src="/products/mixed-seafood.jpg" 
-                alt="Vishra Exports Processing Base Eluru" 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent opacity-80" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <span className="text-xs font-bold tracking-widest text-teal-400 uppercase">AQUACULTURE CAPITAL</span>
-                <h4 className="text-xl font-bold text-white">Eluru, West Godavari Belt, Andhra Pradesh</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden relative shadow-2xl border border-white/10">
+                <img 
+                  src="/products/vannamei.jpg" 
+                  alt="Seafood Division - Vannamei Shrimp" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="text-[10px] font-bold tracking-widest text-teal-400 uppercase block">DIVISION 01</span>
+                  <h4 className="text-sm font-bold text-white">Seafood Export</h4>
+                </div>
               </div>
+
+              <div className="aspect-[4/5] rounded-2xl overflow-hidden relative shadow-2xl border border-white/10 mt-6">
+                <img 
+                  src="/products/rice.jpg" 
+                  alt="Agricultural Division - Sona Masoori Rice" 
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent opacity-80" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase block">DIVISION 02</span>
+                  <h4 className="text-sm font-bold text-white">Agri Products</h4>
+                </div>
+              </div>
+            </div>
+
+            {/* Badge overlay */}
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#252525] border border-teal-500/30 px-6 py-2.5 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-md">
+              <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
+              <span className="text-xs font-bold text-white">Eluru & Godavari Delta Hub</span>
             </div>
           </motion.div>
 
@@ -44,28 +65,32 @@ export function HomeAbout() {
             </span>
 
             <h2 className="text-3xl md:text-5xl font-extrabold text-white leading-tight">
-              India's Leading Seafood Exporter From Eluru Hub
+              India's Premier Seafood & Agricultural Exporter
             </h2>
 
             <p className="text-slate-300 text-base leading-relaxed">
-              <strong>VISHRA GLOBAL EXPORTS</strong> operates at the heart of <strong>Eluru, Andhra Pradesh</strong> — the recognized epicenter of Indian aquaculture. Positioned in the fertile Godavari delta, we harvest, process, and export top-tier <em>Vannamei Shrimp</em>, <em>Black Tiger Shrimp</em>, <em>Rohu</em>, and <em>Catla fish</em>.
+              <strong>VISHRA GLOBAL EXPORTS</strong> operates at the heart of <strong>Eluru, Andhra Pradesh</strong> — the recognized epicenter of Indian aquaculture and fertile rice agricultural belts. We specialize in dual-division global exports: premium <em>Seafood (Vannamei, Black Tiger, Rohu, Catla)</em> and certified <em>Agri Commodities (Sona Masoori Rice, Spices, Millets, Pulses)</em>.
             </p>
 
             <div className="grid grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-[#252525] border border-white/10">
-                <ShieldCheck className="w-6 h-6 text-teal-400 mb-2" />
-                <h4 className="font-bold text-sm text-white">65%+ AP Export Share</h4>
-                <p className="text-xs text-slate-400 mt-1">Andhra Pradesh dominates India's marine exports.</p>
+              <div className="p-4 rounded-xl bg-[#252525] border border-white/10 flex items-start gap-3">
+                <Fish className="w-6 h-6 text-teal-400 shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-sm text-white">Seafood Division</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">Cold-chain frozen shrimp, fish & squid.</p>
+                </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#252525] border border-white/10">
-                <Award className="w-6 h-6 text-teal-400 mb-2" />
-                <h4 className="font-bold text-sm text-white">US-FDA & EU Certified</h4>
-                <p className="text-xs text-slate-400 mt-1">Export processing with 100% lab traceability.</p>
+              <div className="p-4 rounded-xl bg-[#252525] border border-white/10 flex items-start gap-3">
+                <Wheat className="w-6 h-6 text-amber-400 shrink-0 mt-1" />
+                <div>
+                  <h4 className="font-bold text-sm text-white">Agri Division</h4>
+                  <p className="text-xs text-slate-400 mt-0.5">Rice, Guntur spices, millets & pulses.</p>
+                </div>
               </div>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-4 flex items-center gap-4">
               <Link href="/about">
                 <Button className="h-12 px-6 bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm shadow-md shadow-teal-500/20">
                   Read Full Company Story & Certifications
