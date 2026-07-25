@@ -44,12 +44,6 @@ export function HomeAbout() {
                 </div>
               </div>
             </div>
-
-            {/* Badge overlay */}
-            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-[#252525] border border-teal-500/30 px-6 py-2.5 rounded-full shadow-2xl flex items-center gap-3 backdrop-blur-md">
-              <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
-              <span className="text-xs font-bold text-white">Eluru & Godavari Delta Hub</span>
-            </div>
           </motion.div>
 
           {/* Narrative side */}
