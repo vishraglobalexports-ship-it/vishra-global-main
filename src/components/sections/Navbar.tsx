@@ -502,10 +502,6 @@ export function Navbar() {
                   Open Default Mail App
                 </Button>
               </div>
-
-              <p className="text-[11px] text-slate-500 text-center mt-4">
-                Target: vishraglobalexports@gmail.com
-              </p>
             </motion.div>
           </div>
         )}
