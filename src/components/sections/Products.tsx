@@ -110,7 +110,7 @@ export function Products() {
                   onClick={() => {
                     const subject = encodeURIComponent(`Product Enquiry - ${product.name}`);
                     const body = encodeURIComponent(`Hello VISHRA GLOBAL EXPORTS,\n\nI am interested in ordering/inquiring about ${product.name}.\nPlease share availability, pricing, and grade specifications.\n\nThank you!`);
-                    window.open(`mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`, '_blank');
+                    window.location.href = `mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`;
                   }}
                   variant="outline"
                   className="w-full text-slate-200 border-white/20 hover:bg-white/10 h-9 text-[11px] font-semibold px-2"

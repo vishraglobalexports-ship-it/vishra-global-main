@@ -97,7 +97,7 @@ export function Navbar() {
       `Hello VISHRA GLOBAL EXPORTS team,\n\nI would like to request an official export quotation for my cart.\n\nCUSTOMER DETAILS:\nName: ${userInfo.name.trim()}\nPhone: ${userInfo.phone.trim()}\nDelivery Address: ${userInfo.address.trim()}\n\nORDER ITEMS:\n`
     ) + itemsList + encodeURIComponent(`\n\nTotal Items: ${totalItemsCount}\n\nPlease reply with pricing and shipping timeline.\nThank you!`);
 
-    window.open(`mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    window.location.href = `mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`;
   };
 
   return (
