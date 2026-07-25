@@ -37,11 +37,21 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-6">Legal</h3>
+            <h3 className="text-white font-semibold mb-6">Direct Contact</h3>
             <ul className="space-y-3 text-white/60 text-sm">
-              <li><a href="#" className="hover:text-secondary transition-colors">Terms of Trade</a></li>
-              <li><a href="#" className="hover:text-secondary transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-secondary transition-colors">Compliance Certificates</a></li>
+              <li>
+                <a href="https://wa.me/919121297999" target="_blank" rel="noreferrer" className="hover:text-teal-400 transition-colors flex items-center gap-2">
+                  <span className="text-teal-400 font-bold">Call/WhatsApp:</span> +91 91212 97999
+                </a>
+              </li>
+              <li>
+                <a href="mailto:vishraglobalexports@gmail.com" className="hover:text-teal-400 transition-colors flex items-center gap-2">
+                  <span className="text-teal-400 font-bold">Email:</span> vishraglobalexports@gmail.com
+                </a>
+              </li>
+              <li className="text-xs text-slate-400 pt-1">
+                Opp St.Theresa Degree College, Kata Subbarao Thota, Eluru, AP 534003
+              </li>
             </ul>
           </div>
 
