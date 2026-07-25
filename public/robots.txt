@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin-vishra-exports
+
+Sitemap: https://vishraglobal.com/sitemap.xml
