@@ -154,7 +154,7 @@ export function Products() {
         </div>
 
         {/* SECTION 1: SEAFOOD PRODUCTS */}
-        <div className="mb-20">
+        <div id="seafood-division" className="mb-20 scroll-mt-28">
           <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
             <div className="p-3 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
               <Fish className="w-6 h-6" />
@@ -169,7 +169,7 @@ export function Products() {
         </div>
 
         {/* SECTION 2: AGRICULTURAL PRODUCTS */}
-        <div>
+        <div id="agro-division" className="scroll-mt-28">
           <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/10">
             <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
               <Wheat className="w-6 h-6" />
