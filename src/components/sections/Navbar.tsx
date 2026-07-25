@@ -111,9 +111,9 @@ export function Navbar() {
       >
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2 cursor-pointer group">
-              <div className="p-2 rounded-xl bg-teal-500 text-[#202020] shadow-md shadow-teal-500/20 group-hover:scale-105 transition-transform font-black">
-                <Ship size={22} />
+            <Link href="/" className="flex items-center gap-3 cursor-pointer group">
+              <div className="p-1.5 rounded-xl bg-white shadow-md shadow-black/20 group-hover:scale-105 transition-transform flex items-center justify-center">
+                <img src="/logo.png" alt="VG Exports Logo" className="h-9 w-auto object-contain" />
               </div>
               <div>
                 <h1 className="font-extrabold text-xl tracking-tight leading-none text-white drop-shadow-md">

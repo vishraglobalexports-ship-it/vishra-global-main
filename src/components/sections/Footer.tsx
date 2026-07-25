@@ -5,10 +5,17 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           
           <div className="col-span-1">
-            <h2 className="font-bold text-2xl tracking-tight text-white mb-4">
-              VISHRA<br/>
-              <span className="text-secondary text-base tracking-widest block mt-1">GLOBAL EXPORTS</span>
-            </h2>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 rounded-xl bg-white shadow-md inline-flex items-center justify-center">
+                <img src="/logo.png" alt="VG Exports Logo" className="h-10 w-auto object-contain" />
+              </div>
+              <div>
+                <h2 className="font-extrabold text-xl tracking-tight text-white leading-none">
+                  VISHRA
+                </h2>
+                <span className="text-teal-400 text-xs font-bold tracking-widest block mt-0.5">GLOBAL EXPORTS</span>
+              </div>
+            </div>
             <p className="text-white/60 text-sm leading-relaxed max-w-sm">
               Headquartered in Eluru, Andhra Pradesh — India's premier aquaculture hub. Connecting rich marine & freshwater harvests to international buyers worldwide.
             </p>
