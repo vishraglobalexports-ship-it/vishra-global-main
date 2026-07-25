@@ -24,12 +24,11 @@ export function Contact() {
   
   const { register, handleSubmit, getValues, formState: { errors } } = useForm<ContactFormInputs>();
 
-  const onSubmit = (e?: React.BaseSyntheticEvent) => {
+  const onSubmit = (formData: ContactFormInputs) => {
     setIsSubmitting(true);
     setSubmitStatus('success');
 
     // 1. Format WhatsApp message
-    const formData = getValues();
     let waMessage = `Hello VISHRA GLOBAL EXPORTS!\n\n*NEW WEBSITE ENQUIRY*\n`;
     waMessage += `👤 *Name:* ${formData.name.trim()}\n`;
     waMessage += `🏢 *Company:* ${formData.company.trim()}\n`;
