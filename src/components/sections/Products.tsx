@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { FaWhatsapp } from 'react-icons/fa';
-import { ShoppingBag, Check, Mail, Fish, Wheat } from 'lucide-react';
+import { ShoppingBag, Check, Mail, Fish, Wheat, ExternalLink, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useProducts, type Product } from '@/context/ProductsContext';
 import { useState } from 'react';
@@ -10,6 +10,9 @@ export function Products() {
   const { addToCart, cart } = useCart();
   const { getSeafoodProducts, getAgriProducts } = useProducts();
   const [addedMap, setAddedMap] = useState<Record<number, boolean>>({});
+  
+  // Modal state
+  const [emailModalProduct, setEmailModalProduct] = useState<Product | null>(null);
 
   const handleAddToCart = (product: { id: number; name: string; image: string }) => {
     addToCart({ id: product.id, name: product.name, image: product.image }, 1);
@@ -22,6 +25,20 @@ export function Products() {
   const handleEnquire = (productName: string) => {
     const text = `Hello, I'm interested in ${productName} from VISHRA GLOBAL EXPORTS.`;
     window.open(`https://wa.me/919121297999?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const openGmailWeb = (productName: string) => {
+    const subject = encodeURIComponent(`Product Enquiry - ${productName}`);
+    const body = encodeURIComponent(`Hello VISHRA GLOBAL EXPORTS,\n\nI am interested in ordering/inquiring about ${productName}.\nPlease share availability, pricing, and grade specifications.\n\nThank you!`);
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=vishraglobalexports@gmail.com&su=${subject}&body=${body}`, '_blank');
+    setEmailModalProduct(null);
+  };
+
+  const openDefaultMailApp = (productName: string) => {
+    const subject = encodeURIComponent(`Product Enquiry - ${productName}`);
+    const body = encodeURIComponent(`Hello VISHRA GLOBAL EXPORTS,\n\nI am interested in ordering/inquiring about ${productName}.\nPlease share availability, pricing, and grade specifications.\n\nThank you!`);
+    window.location.href = `mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`;
+    setEmailModalProduct(null);
   };
 
   const renderProductGrid = (productList: Product[]) => (
@@ -107,11 +124,7 @@ export function Products() {
                 </Button>
 
                 <Button 
-                  onClick={() => {
-                    const subject = encodeURIComponent(`Product Enquiry - ${product.name}`);
-                    const body = encodeURIComponent(`Hello VISHRA GLOBAL EXPORTS,\n\nI am interested in ordering/inquiring about ${product.name}.\nPlease share availability, pricing, and grade specifications.\n\nThank you!`);
-                    window.location.href = `mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`;
-                  }}
+                  onClick={() => setEmailModalProduct(product)}
                   variant="outline"
                   className="w-full text-slate-200 border-white/20 hover:bg-white/10 h-9 text-[11px] font-semibold px-2"
                 >
@@ -127,7 +140,7 @@ export function Products() {
   );
 
   return (
-    <section id="products" className="py-24 bg-[#202020] text-white">
+    <section id="products" className="py-24 bg-[#202020] text-white relative">
       <div className="container mx-auto px-4 md:px-6">
         
         {/* Main Section Header */}
@@ -171,6 +184,67 @@ export function Products() {
         </div>
 
       </div>
+
+      {/* POPUP EMAIL MODAL */}
+      <AnimatePresence>
+        {emailModalProduct && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md bg-[#252525] border border-white/15 rounded-2xl p-6 shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setEmailModalProduct(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-white">Email Enquiry</h3>
+                  <p className="text-xs text-teal-400 font-semibold">{emailModalProduct.name}</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-300 mb-6 leading-relaxed">
+                How would you like to send your enquiry to <span className="text-white font-bold">vishraglobalexports@gmail.com</span>?
+              </p>
+
+              <div className="space-y-3">
+                {/* Option 1: Open in Gmail Web */}
+                <Button
+                  onClick={() => openGmailWeb(emailModalProduct.name)}
+                  className="w-full h-12 bg-red-600 hover:bg-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition-all"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Open Gmail in Browser
+                </Button>
+
+                {/* Option 2: Open in Default Mail App */}
+                <Button
+                  onClick={() => openDefaultMailApp(emailModalProduct.name)}
+                  variant="outline"
+                  className="w-full h-12 bg-white/5 border-white/20 hover:bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all"
+                >
+                  <Mail className="w-4 h-4 text-teal-400" />
+                  Open Default Mail App
+                </Button>
+              </div>
+
+              <p className="text-[11px] text-slate-500 text-center mt-4">
+                Target: vishraglobalexports@gmail.com
+              </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
+
