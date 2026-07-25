@@ -214,6 +214,43 @@ function AddProductPanel({
 
 export default function AdminPage() {
   const { products, addProduct, updateProduct, deleteProduct, resetProducts, getSeafoodProducts, getAgriProducts } = useProducts();
+
+  // Auth State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return sessionStorage.getItem('vishra_admin_auth') === 'true';
+  });
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+
+  const DEFAULT_EMAIL = 'vishraglobalexports@gmail.com';
+  const DEFAULT_PASS = 'Rjshepherd@1994';
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+
+    const inputEmail = email.trim().toLowerCase();
+    const inputPass = password.trim();
+
+    if (authMode === 'login' || authMode === 'signup') {
+      if (inputEmail === DEFAULT_EMAIL && inputPass === DEFAULT_PASS) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('vishra_admin_auth', 'true');
+      } else {
+        setAuthError('Invalid credentials! Please use valid admin email & password.');
+      }
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('vishra_admin_auth');
+    setEmail('');
+    setPassword('');
+  };
+
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<{ name: string; description: string; image: string; category: 'seafood' | 'agri' }>({ name: '', description: '', image: '', category: 'seafood' });
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
@@ -438,6 +475,106 @@ export default function AdminPage() {
   const seafood = getSeafoodProducts();
   const agri = getAgriProducts();
 
+  if (!isAuthenticated) {
+    return (
+      <main className="min-h-screen w-full bg-[#181818] text-white flex items-center justify-center p-4 font-sans relative overflow-hidden">
+        {/* Ambient background blur */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md bg-[#222] border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10"
+        >
+          {/* Header */}
+          <div className="text-center mb-8">
+            <Link href="/">
+              <button className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors mb-4">
+                <ArrowLeft className="w-4 h-4" /> Back to Store
+              </button>
+            </Link>
+            <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center mx-auto mb-3">
+              <ShieldAlert className="w-6 h-6" />
+            </div>
+            <h1 className="text-2xl font-extrabold text-white">VISHRA GLOBAL EXPORTS</h1>
+            <p className="text-xs text-slate-400 mt-1">Admin Control Portal</p>
+
+            {/* Toggle Tabs */}
+            <div className="flex bg-[#181818] p-1 rounded-xl border border-white/10 mt-6">
+              <button
+                type="button"
+                onClick={() => { setAuthMode('login'); setAuthError(''); }}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                  authMode === 'login' 
+                    ? 'bg-teal-500 text-[#141414] shadow-md' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Log In
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAuthMode('signup'); setAuthError(''); }}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                  authMode === 'signup' 
+                    ? 'bg-teal-500 text-[#141414] shadow-md' 
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Sign Up
+              </button>
+            </div>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
+            {authError && (
+              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
+                {authError}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
+                Email Address
+              </label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="vishraglobalexports@gmail.com"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm h-12 rounded-xl shadow-lg shadow-teal-500/20 transition-all mt-2"
+            >
+              {authMode === 'login' ? 'Access Admin Portal' : 'Create Admin Account'}
+            </Button>
+          </form>
+        </motion.div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen w-full bg-[#181818] text-white font-sans">
       {/* Top Bar */}
@@ -454,7 +591,7 @@ export default function AdminPage() {
               <ShieldAlert className="w-5 h-5 text-teal-400 shrink-0" />
               Admin Panel
             </h1>
-            <p className="text-[10px] md:text-[11px] text-slate-500 truncate">{products.length} products</p>
+            <p className="text-[10px] md:text-[11px] text-slate-500 truncate">{products.length} products · Logged in as Admin</p>
           </div>
 
           {/* Actions */}
@@ -481,6 +618,14 @@ export default function AdminPage() {
             >
               <Plus className="w-4 h-4 sm:mr-1.5" /><span className="hidden sm:inline">Add Product</span>
             </Button>
+
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 transition-all text-xs font-bold shrink-0"
+              title="Log Out"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </div>
