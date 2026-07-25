@@ -158,45 +158,34 @@ function AddProductPanel({
           />
         </div>
 
-        {/* Subcategory */}
+        {/* Subcategory Dropdown & Input */}
         <div>
           <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
             Section / Subcategory
           </label>
           <div className="space-y-2">
-            <input
-              type="text"
-              list="existing-subcategories"
+            <select
               value={subcategory}
               onChange={(e) => setSubcategory(e.target.value)}
-              placeholder="Select or type custom subcategory..."
-              className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
-            />
-            <datalist id="existing-subcategories">
-              {Array.from(new Set(existingProducts.map(p => p.subcategory).filter(Boolean))).map((sub) => (
-                <option key={sub} value={sub} />
+              className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all cursor-pointer"
+            >
+              <option value="">-- Select Existing Subcategory --</option>
+              {Array.from(new Set(existingProducts.filter(p => p.category === category).map(p => p.subcategory).filter(Boolean))).map((sub) => (
+                <option key={sub} value={sub}>{sub}</option>
               ))}
-            </datalist>
+              <option value="__custom__">+ Type New Subcategory...</option>
+            </select>
 
-            {/* Quick-select pills for created subcategories */}
-            {Array.from(new Set(existingProducts.filter(p => p.category === category).map(p => p.subcategory).filter(Boolean))).length > 0 && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                <span className="text-[10px] text-slate-500 font-semibold self-center mr-1">Existing:</span>
-                {Array.from(new Set(existingProducts.filter(p => p.category === category).map(p => p.subcategory).filter(Boolean))).map((sub) => (
-                  <button
-                    key={sub}
-                    type="button"
-                    onClick={() => setSubcategory(sub as string)}
-                    className={`text-[11px] px-2.5 py-1 rounded-md border font-medium transition-all ${
-                      subcategory === sub
-                        ? 'bg-teal-500/20 text-teal-400 border-teal-500/40 font-bold'
-                        : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20 hover:text-white'
-                    }`}
-                  >
-                    + {sub}
-                  </button>
-                ))}
-              </div>
+            {/* Custom Subcategory Text Input if custom selected or typing new */}
+            {(subcategory === '__custom__' || (!Array.from(new Set(existingProducts.map(p => p.subcategory).filter(Boolean))).includes(subcategory) && subcategory !== '')) && (
+              <input
+                type="text"
+                value={subcategory === '__custom__' ? '' : subcategory}
+                onChange={(e) => setSubcategory(e.target.value)}
+                placeholder="Enter new subcategory name..."
+                autoFocus
+                className="w-full bg-[#1e1e1e] text-teal-300 border border-teal-500/40 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-slate-500 font-semibold"
+              />
             )}
           </div>
         </div>
@@ -407,14 +396,33 @@ export default function AdminPage() {
 
             {/* Subcategory */}
             <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Section / Subcategory</label>
-              <input
-                type="text"
-                value={editForm.subcategory}
-                onChange={(e) => setEditForm((f) => ({ ...f, subcategory: e.target.value }))}
-                placeholder="e.g. Shrimp & Prawns, Rice Varieties, Spices & Seasonings"
-                className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
-              />
+              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
+                Section / Subcategory
+              </label>
+              <div className="space-y-2">
+                <select
+                  value={editForm.subcategory}
+                  onChange={(e) => setEditForm((f) => ({ ...f, subcategory: e.target.value }))}
+                  className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all cursor-pointer"
+                >
+                  <option value="">-- Select Existing Subcategory --</option>
+                  {Array.from(new Set(products.filter(p => p.category === editForm.category).map(p => p.subcategory).filter(Boolean))).map((sub) => (
+                    <option key={sub} value={sub}>{sub}</option>
+                  ))}
+                  <option value="__custom__">+ Type New Subcategory...</option>
+                </select>
+
+                {(editForm.subcategory === '__custom__' || (!Array.from(new Set(products.map(p => p.subcategory).filter(Boolean))).includes(editForm.subcategory) && editForm.subcategory !== '')) && (
+                  <input
+                    type="text"
+                    value={editForm.subcategory === '__custom__' ? '' : editForm.subcategory}
+                    onChange={(e) => setEditForm((f) => ({ ...f, subcategory: e.target.value }))}
+                    placeholder="Enter new subcategory name..."
+                    autoFocus
+                    className="w-full bg-[#1e1e1e] text-teal-300 border border-teal-500/40 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all font-semibold"
+                  />
+                )}
+              </div>
             </div>
 
             {/* Category */}
