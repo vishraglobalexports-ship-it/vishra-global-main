@@ -497,34 +497,8 @@ export default function AdminPage() {
             <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center mx-auto mb-3">
               <ShieldAlert className="w-6 h-6" />
             </div>
-            <h1 className="text-2xl font-extrabold text-white">VISHRA GLOBAL EXPORTS</h1>
-            <p className="text-xs text-slate-400 mt-1">Admin Control Portal</p>
-
-            {/* Toggle Tabs */}
-            <div className="flex bg-[#181818] p-1 rounded-xl border border-white/10 mt-6">
-              <button
-                type="button"
-                onClick={() => { setAuthMode('login'); setAuthError(''); }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                  authMode === 'login' 
-                    ? 'bg-teal-500 text-[#141414] shadow-md' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Log In
-              </button>
-              <button
-                type="button"
-                onClick={() => { setAuthMode('signup'); setAuthError(''); }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-                  authMode === 'signup' 
-                    ? 'bg-teal-500 text-[#141414] shadow-md' 
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Sign Up
-              </button>
-            </div>
+            <h1 className="text-2xl font-extrabold text-white">Admin Authentication</h1>
+            <p className="text-xs text-slate-400 mt-1">Sign in with authorized admin credentials</p>
           </div>
 
           {/* Form */}
@@ -544,8 +518,7 @@ export default function AdminPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="vishraglobalexports@gmail.com"
-                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
               />
             </div>
 
@@ -559,7 +532,7 @@ export default function AdminPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
               />
             </div>
 
@@ -567,7 +540,7 @@ export default function AdminPage() {
               type="submit"
               className="w-full bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm h-12 rounded-xl shadow-lg shadow-teal-500/20 transition-all mt-2"
             >
-              {authMode === 'login' ? 'Access Admin Portal' : 'Create Admin Account'}
+              Sign In to Admin
             </Button>
           </form>
         </motion.div>

@@ -23,11 +23,45 @@ export function Contact() {
   
   const { register, handleSubmit, getValues, formState: { errors } } = useForm<ContactFormInputs>();
 
-  const onSubmit = () => {
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const onSubmit = async () => {
     setIsSubmitting(true);
+    setSubmitStatus('idle');
     const formData = getValues();
 
-    // 1. Format WhatsApp message
+    try {
+      // 1. Submit email via FormSubmit AJAX endpoint
+      const response = await fetch("https://formsubmit.co/ajax/vishraglobalexports@gmail.com", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          _subject: `New Export Enquiry from ${formData.name}`,
+          _template: "table",
+          "Full Name": formData.name,
+          "Company": formData.company,
+          "Email": formData.email,
+          "Phone": formData.phone,
+          "Product": formData.product,
+          "Message": formData.message
+        })
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+
+    // 2. Open WhatsApp link for instant notification
     let waMessage = `Hello VISHRA GLOBAL EXPORTS!\n\n*NEW WEBSITE ENQUIRY*\n`;
     waMessage += `👤 *Name:* ${formData.name.trim()}\n`;
     waMessage += `🏢 *Company:* ${formData.company.trim()}\n`;
@@ -36,15 +70,7 @@ export function Contact() {
     waMessage += `📦 *Product of Interest:* ${formData.product}\n`;
     waMessage += `💬 *Message:* ${formData.message.trim()}\n`;
 
-    // 2. Open WhatsApp link in new window
     window.open(`https://wa.me/919121297999?text=${encodeURIComponent(waMessage)}`, '_blank');
-
-    // 3. Submit HTML form to FormSubmit.co for Email delivery (vishraglobalexports@gmail.com)
-    setTimeout(() => {
-      if (formRef.current) {
-        formRef.current.submit();
-      }
-    }, 500);
   };
 
   const fullAddressText = "Opp St.Theresa Degree College, Kata Subbarao Thota, Eluru, Andhra Pradesh - 534003, India";
@@ -230,6 +256,18 @@ export function Contact() {
                 />
                 {errors.message && <p className="text-xs text-rose-400">{errors.message.message}</p>}
               </div>
+
+              {submitStatus === 'success' && (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-semibold">
+                  ✓ Your enquiry has been sent directly to vishraglobalexports@gmail.com! We will get back to you shortly.
+                </div>
+              )}
+
+              {submitStatus === 'error' && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-sm font-semibold">
+                  Notice: Form sent via WhatsApp. First-time email activation may require confirming FormSubmit's verification email in vishraglobalexports@gmail.com.
+                </div>
+              )}
 
               <Button 
                 type="submit" 
