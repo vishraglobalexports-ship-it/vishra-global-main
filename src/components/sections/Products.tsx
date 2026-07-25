@@ -3,76 +3,12 @@ import { Button } from '@/components/ui/button';
 import { FaWhatsapp } from 'react-icons/fa';
 import { ShoppingBag, Check, Mail, Fish, Wheat } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useProducts, type Product } from '@/context/ProductsContext';
 import { useState } from 'react';
-
-const seafoodProducts = [
-  {
-    id: 1,
-    name: 'Vannamei Shrimp',
-    description: 'HOSO, HLSO, PD, PUD grades available. Sizes 10/20 to 100/200. Premium farm-raised quality from Eluru.',
-    image: '/products/vannamei.jpg'
-  },
-  {
-    id: 2,
-    name: 'Black Tiger Shrimp',
-    description: 'Wild caught, premium export grade. Known for exceptional flavor and firm texture.',
-    image: '/products/black-tiger.jpg'
-  },
-  {
-    id: 3,
-    name: 'Rohu Fish',
-    description: 'Fresh and frozen. Available whole or as fillets. Processed under strict hygiene standards.',
-    image: '/products/rohu.jpg'
-  },
-  {
-    id: 4,
-    name: 'Catla Fish',
-    description: 'Frozen whole, IQF packs. Sourced from pristine waters, maintaining natural freshness.',
-    image: '/products/catla.jpg'
-  },
-  {
-    id: 5,
-    name: 'Squid',
-    description: 'Cleaned tubes and rings, export grade. Tender texture, perfect for global culinary markets.',
-    image: '/products/squid.jpg'
-  },
-  {
-    id: 6,
-    name: 'Mixed Frozen Seafood',
-    description: 'IQF assorted pack ideal for retail buyers and food service. Customizable mix ratios.',
-    image: '/products/mixed-seafood.jpg'
-  }
-];
-
-const agriProducts = [
-  {
-    id: 7,
-    name: 'Export Quality Indian Rice',
-    description: 'Premium Sona Masoori, 100% Broken, Parboiled, and Non-Basmati Rice. Sourced directly from Andhra Pradesh paddy fields.',
-    image: '/products/rice.jpg'
-  },
-  {
-    id: 8,
-    name: 'Indian Export Spices',
-    description: 'Authentic Guntur Red Chili, Turmeric finger & powder, Black Pepper, Cardamom, and Cumin seeds. Rich aroma and color.',
-    image: '/products/spices.jpg'
-  },
-  {
-    id: 9,
-    name: 'Nutritious Organic Millets',
-    description: 'Pearl Millet (Bajra), Finger Millet (Ragi), Foxtail & Little Millet. High-fiber superfoods processed for global export.',
-    image: '/products/millets.jpg'
-  },
-  {
-    id: 10,
-    name: 'Premium Export Pulses & Lentils',
-    description: 'Toor Dal (Yellow Split Peas), Chana Dal, Urad Dal, and Red Lentils (Masoor). Carefully sorted, clean, and moisture-controlled.',
-    image: '/products/pulses.jpg'
-  }
-];
 
 export function Products() {
   const { addToCart, cart } = useCart();
+  const { getSeafoodProducts, getAgriProducts } = useProducts();
   const [addedMap, setAddedMap] = useState<Record<number, boolean>>({});
 
   const handleAddToCart = (product: { id: number; name: string; image: string }) => {
@@ -88,7 +24,7 @@ export function Products() {
     window.open(`https://wa.me/919121297999?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  const renderProductGrid = (productList: typeof seafoodProducts) => (
+  const renderProductGrid = (productList: Product[]) => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {productList.map((product, index) => {
         const inCart = cart.some((i) => i.id === product.id);
@@ -136,13 +72,20 @@ export function Products() {
             <div className="p-6 pt-0 space-y-2">
               <Button 
                 onClick={() => handleAddToCart(product)}
+                disabled={inCart}
                 className={`w-full font-bold h-11 transition-all ${
-                  isAddedJustNow
+                  inCart
+                    ? 'bg-slate-700 text-slate-300 border border-white/10 cursor-not-allowed'
+                    : isAddedJustNow
                     ? 'bg-emerald-600 hover:bg-emerald-600 text-white'
                     : 'bg-teal-500 hover:bg-teal-400 text-[#141414] shadow-md shadow-teal-500/20'
                 }`}
               >
-                {isAddedJustNow ? (
+                {inCart ? (
+                  <>
+                    <Check className="mr-2 w-4 h-4 text-teal-400" /> Added to Cart
+                  </>
+                ) : isAddedJustNow ? (
                   <>
                     <Check className="mr-2 w-4 h-4" /> Added to Cart
                   </>
@@ -209,7 +152,7 @@ export function Products() {
             </div>
           </div>
 
-          {renderProductGrid(seafoodProducts)}
+          {renderProductGrid(getSeafoodProducts())}
         </div>
 
         {/* SECTION 2: AGRICULTURAL PRODUCTS */}
@@ -224,7 +167,7 @@ export function Products() {
             </div>
           </div>
 
-          {renderProductGrid(agriProducts)}
+          {renderProductGrid(getAgriProducts())}
         </div>
 
       </div>

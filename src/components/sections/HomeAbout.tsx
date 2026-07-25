@@ -63,7 +63,7 @@ export function HomeAbout() {
             </h2>
 
             <p className="text-slate-300 text-base leading-relaxed">
-              <strong>VISHRA GLOBAL EXPORTS</strong> operates at the heart of <strong>Eluru, Andhra Pradesh</strong> — the recognized epicenter of Indian aquaculture and fertile rice agricultural belts. We specialize in dual-division global exports: premium <em>Seafood (Vannamei, Black Tiger, Rohu, Catla)</em> and certified <em>Agri Commodities (Sona Masoori Rice, Spices, Millets, Pulses)</em>.
+              Based in Eluru, Andhra Pradesh, <strong>VISHRA GLOBAL EXPORTS</strong> delivers premium seafood and certified agricultural commodities with global shipping precision.
             </p>
 
             <div className="grid grid-cols-2 gap-4 pt-2">

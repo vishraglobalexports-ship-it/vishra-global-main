@@ -8,8 +8,10 @@ import ProductsPage from '@/pages/products';
 import AboutPage from '@/pages/about';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { CartProvider } from '@/context/CartContext';
+import { ProductsProvider } from '@/context/ProductsContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { AnimatePresence } from 'framer-motion';
+import AdminPage from '@/pages/admin';
 
 const queryClient = new QueryClient();
 
@@ -19,6 +21,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/products" component={ProductsPage} />
       <Route path="/about" component={AboutPage} />
+      <Route path="/admin-vishra-exports" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -36,17 +39,19 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <TooltipProvider>
-          <AnimatePresence mode="wait">
-            {isLoading && <LoadingScreen key="loading" />}
-          </AnimatePresence>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-            <Router />
-          </WouterRouter>
-          <Toaster />
-        </TooltipProvider>
-      </CartProvider>
+      <ProductsProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <AnimatePresence mode="wait">
+              {isLoading && <LoadingScreen key="loading" />}
+            </AnimatePresence>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+              <Router />
+            </WouterRouter>
+            <Toaster />
+          </TooltipProvider>
+        </CartProvider>
+      </ProductsProvider>
     </QueryClientProvider>
   );
 }
