@@ -58,7 +58,7 @@ export function Products() {
 
   const handleEnquire = (productName: string) => {
     const text = `Hello, I'm interested in ${productName} from VISHRA GLOBAL EXPORTS.`;
-    window.open(`https://wa.me/917382130706?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/919121297999?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
@@ -144,7 +144,7 @@ export function Products() {
                       onClick={() => {
                         const subject = encodeURIComponent(`Product Enquiry - ${product.name}`);
                         const body = encodeURIComponent(`Hello VISHRA GLOBAL EXPORTS,\n\nI am interested in ordering/inquiring about ${product.name}.\nPlease share availability, pricing, and grade specifications.\n\nThank you!`);
-                        window.open(`mailto:dineshkrishnapradeep@gmail.com?subject=${subject}&body=${body}`, '_blank');
+                        window.open(`mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`, '_blank');
                       }}
                       variant="outline"
                       className="w-full text-slate-200 border-white/20 hover:bg-white/10 h-9 text-[11px] font-semibold px-2"

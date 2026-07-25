@@ -75,7 +75,7 @@ export function Navbar() {
     message += `\nTotal Items: *${totalItemsCount}*\n`;
     message += `\nPlease provide price quote, shipping options, and estimated timeline.`;
 
-    window.open(`https://wa.me/917382130706?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(`https://wa.me/919121297999?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const handleFinalSubmitEmail = (e: React.FormEvent) => {
@@ -97,7 +97,7 @@ export function Navbar() {
       `Hello VISHRA GLOBAL EXPORTS team,\n\nI would like to request an official export quotation for my cart.\n\nCUSTOMER DETAILS:\nName: ${userInfo.name.trim()}\nPhone: ${userInfo.phone.trim()}\nDelivery Address: ${userInfo.address.trim()}\n\nORDER ITEMS:\n`
     ) + itemsList + encodeURIComponent(`\n\nTotal Items: ${totalItemsCount}\n\nPlease reply with pricing and shipping timeline.\nThank you!`);
 
-    window.open(`mailto:dineshkrishnapradeep@gmail.com?subject=${subject}&body=${body}`, '_blank');
+    window.open(`mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`, '_blank');
   };
 
   return (

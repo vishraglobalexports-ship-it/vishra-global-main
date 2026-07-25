@@ -308,7 +308,7 @@ export function About() {
               size="lg" 
               variant="outline"
               className="h-14 px-8 bg-white/5 border-white/20 hover:bg-white/10 text-white font-bold text-base"
-              onClick={() => window.open('https://wa.me/917382130706', '_blank')}
+              onClick={() => window.open('https://wa.me/919121297999', '_blank')}
             >
               Contact Eluru Export Team
             </Button>

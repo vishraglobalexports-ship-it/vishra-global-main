@@ -153,7 +153,7 @@ export function Hero() {
                 size="lg" 
                 variant="outline" 
                 className="text-base font-bold h-14 px-8 bg-white/5 backdrop-blur-md text-white border-white/20 hover:bg-white/15 hover:border-white/40 transition-all duration-300"
-                onClick={() => window.open('https://wa.me/917382130706', '_blank')}
+                onClick={() => window.open('https://wa.me/919121297999', '_blank')}
               >
                 <FaWhatsapp className="mr-2.5 w-5 h-5 text-emerald-400" />
                 Instant WhatsApp Quote

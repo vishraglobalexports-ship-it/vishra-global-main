@@ -37,9 +37,9 @@ export function Contact() {
     waMessage += `💬 *Message:* ${formData.message.trim()}\n`;
 
     // 2. Open WhatsApp link in new window
-    window.open(`https://wa.me/917382130706?text=${encodeURIComponent(waMessage)}`, '_blank');
+    window.open(`https://wa.me/919121297999?text=${encodeURIComponent(waMessage)}`, '_blank');
 
-    // 3. Submit HTML form to FormSubmit.co for Email delivery (dineshkrishnapradeep@gmail.com)
+    // 3. Submit HTML form to FormSubmit.co for Email delivery (vishraglobalexports@gmail.com)
     setTimeout(() => {
       if (formRef.current) {
         formRef.current.submit();
@@ -77,8 +77,8 @@ export function Contact() {
                   <Mail className="w-5 h-5 text-teal-400 shrink-0 mt-1" />
                   <div>
                     <p className="text-xs text-slate-400 mb-0.5">Email Us</p>
-                    <a href="mailto:dineshkrishnapradeep@gmail.com" className="text-sm font-semibold text-white hover:text-teal-400 transition-colors break-all">
-                      dineshkrishnapradeep@gmail.com
+                    <a href="mailto:vishraglobalexports@gmail.com" className="text-sm font-semibold text-white hover:text-teal-400 transition-colors break-all">
+                      vishraglobalexports@gmail.com
                     </a>
                   </div>
                 </div>
@@ -87,8 +87,8 @@ export function Contact() {
                   <Phone className="w-5 h-5 text-teal-400 shrink-0 mt-1" />
                   <div>
                     <p className="text-xs text-slate-400 mb-0.5">Call / WhatsApp</p>
-                    <a href="https://wa.me/917382130706" target="_blank" rel="noreferrer" className="text-sm font-semibold text-white hover:text-teal-400 transition-colors">
-                      +91 73821 30706
+                    <a href="https://wa.me/919121297999" target="_blank" rel="noreferrer" className="text-sm font-semibold text-white hover:text-teal-400 transition-colors">
+                      +91 91212 97999
                     </a>
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export function Contact() {
                   <MapPin className="w-5 h-5 text-teal-400 shrink-0 mt-1" />
                   <div>
                     <p className="text-xs text-slate-400 mb-0.5">Headquarters & Export Office Address</p>
-                    <p className="text-sm font-bold text-white leading-relaxed">
+                    <p className="text-sm font-bold text-[#FFFFFF] leading-relaxed">
                       Opp St.Theresa Degree College,<br />
                       Kata Subbarao Thota, Eluru,<br />
                       Andhra Pradesh - 534003, India
@@ -118,7 +118,7 @@ export function Contact() {
                 <Button 
                   size="lg" 
                   className="w-full bg-teal-500 hover:bg-teal-400 text-[#141414] border-none h-12 text-sm font-bold shadow-lg shadow-teal-500/20"
-                  onClick={() => window.open('https://wa.me/917382130706', '_blank')}
+                  onClick={() => window.open('https://wa.me/919121297999', '_blank')}
                 >
                   <FaWhatsapp className="mr-2 w-5 h-5 text-[#141414]" />
                   Direct WhatsApp Inquiry
@@ -136,7 +136,7 @@ export function Contact() {
           >
             <form 
               ref={formRef}
-              action="https://formsubmit.co/dineshkrishnapradeep@gmail.com" 
+              action="https://formsubmit.co/vishraglobalexports@gmail.com" 
               method="POST" 
               onSubmit={handleSubmit(onSubmit)}
               className="space-y-6"
