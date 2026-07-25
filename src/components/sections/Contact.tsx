@@ -213,6 +213,10 @@ export function Contact() {
                   <option value="Catla Fish">Catla Fish</option>
                   <option value="Squid">Squid</option>
                   <option value="Mixed Frozen Seafood">Mixed Frozen Seafood Pack</option>
+                  <option value="Export Quality Indian Rice">Export Quality Indian Rice (Sona Masoori / Non-Basmati)</option>
+                  <option value="Indian Export Spices">Indian Export Spices (Chili, Turmeric, Pepper)</option>
+                  <option value="Nutritious Organic Millets">Nutritious Organic Millets (Bajra, Ragi, Foxtail)</option>
+                  <option value="Premium Export Pulses">Premium Export Pulses & Lentils (Toor, Chana, Masoor)</option>
                 </select>
               </div>
 

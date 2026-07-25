@@ -134,7 +134,7 @@ export function Hero() {
 
             {/* Subheading */}
             <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 max-w-2xl leading-relaxed">
-              VISHRA GLOBAL EXPORTS delivers export-ready Vannamei Shrimp, Black Tiger, Rohu, Catla, and Squid from Eluru, Andhra Pradesh. Certified processing and global shipping precision.
+              VISHRA GLOBAL EXPORTS delivers export-ready Vannamei Shrimp, Black Tiger, Rohu, Catla, Squid, and Premium Indian Rice from Eluru, Andhra Pradesh. Certified processing and global shipping precision.
             </p>
 
             {/* CTA Buttons */}
