@@ -167,15 +167,6 @@ export function Navbar() {
                 )}
               </button>
 
-              <a 
-                href="https://wa.me/919121297999" 
-                target="_blank" 
-                rel="noreferrer" 
-                className="hidden lg:flex items-center gap-2 text-xs font-bold text-teal-400 bg-teal-500/10 px-3.5 py-2 rounded-xl border border-teal-500/20 hover:bg-teal-500/20 transition-all"
-              >
-                <Phone size={14} /> +91 91212 97999
-              </a>
-
               <Button 
                 onClick={scrollToContact}
                 className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-xs shadow-md shadow-teal-500/20"
