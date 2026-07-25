@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Ship, ShoppingBag, Trash2, ArrowRight, User, Phone, MapPin, ArrowLeft, Mail } from 'lucide-react';
+import { Menu, X, Ship, ShoppingBag, Trash2, ArrowRight, User, Phone, MapPin, ArrowLeft, Mail, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
 import { FaWhatsapp } from 'react-icons/fa';
 import { Link, useLocation } from 'wouter';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [cartEmailModalOpen, setCartEmailModalOpen] = useState(false);
   const [location] = useLocation();
   
   // Checkout Details Step State
@@ -28,8 +30,13 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -64,21 +71,23 @@ export function Navbar() {
       return;
     }
 
-    let message = `Hello VISHRA GLOBAL EXPORTS!\n\n*CUSTOMER DETAILS*\n`;
-    message += `👤 *Name:* ${userInfo.name.trim()}\n`;
-    message += `📞 *Phone:* ${userInfo.phone.trim()}\n`;
-    message += `📍 *Delivery Address:* ${userInfo.address.trim()}\n\n`;
-    message += `*ORDER ITEMS*\n`;
-    cart.forEach((item, index) => {
-      message += `${index + 1}. *${item.name}* (Qty: ${item.quantity})\n`;
-    });
-    message += `\nTotal Items: *${totalItemsCount}*\n`;
-    message += `\nPlease provide price quote, shipping options, and estimated timeline.`;
+    if (cart.length === 0) return;
 
-    window.open(`https://wa.me/919121297999?text=${encodeURIComponent(message)}`, '_blank');
+    let text = `Hello VISHRA GLOBAL EXPORTS team,\n\nI would like to request an official export quotation for my cart.\n\n`;
+    text += `*CUSTOMER DETAILS:*\n`;
+    text += `👤 *Name:* ${userInfo.name.trim()}\n`;
+    text += `📞 *Phone:* ${userInfo.phone.trim()}\n`;
+    text += `📍 *Delivery Address:* ${userInfo.address.trim()}\n\n`;
+    text += `*ORDER ITEMS:*\n`;
+    cart.forEach((item, index) => {
+      text += `${index + 1}. *${item.name}* - Qty: ${item.quantity}\n`;
+    });
+    text += `\n*Total Items:* ${totalItemsCount}\n\nPlease reply with pricing and shipping timeline.\nThank you!`;
+
+    window.open(`https://wa.me/919121297999?text=${encodeURIComponent(text)}`, '_blank');
   };
 
-  const handleFinalSubmitEmail = (e: React.FormEvent) => {
+  const handleOpenCartEmailModal = (e: React.FormEvent) => {
     e.preventDefault();
     const errors = {
       name: !userInfo.name.trim(),
@@ -91,6 +100,21 @@ export function Navbar() {
       return;
     }
 
+    setCartEmailModalOpen(true);
+  };
+
+  const openGmailWebCart = () => {
+    let itemsList = cart.map((item, idx) => `${idx + 1}. ${item.name} (Qty: ${item.quantity})`).join('%0D%0A');
+    let subject = encodeURIComponent(`Order Quote Request - ${userInfo.name.trim()}`);
+    let body = encodeURIComponent(
+      `Hello VISHRA GLOBAL EXPORTS team,\n\nI would like to request an official export quotation for my cart.\n\nCUSTOMER DETAILS:\nName: ${userInfo.name.trim()}\nPhone: ${userInfo.phone.trim()}\nDelivery Address: ${userInfo.address.trim()}\n\nORDER ITEMS:\n`
+    ) + itemsList + encodeURIComponent(`\n\nTotal Items: ${totalItemsCount}\n\nPlease reply with pricing and shipping timeline.\nThank you!`);
+
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=vishraglobalexports@gmail.com&su=${subject}&body=${body}`, '_blank');
+    setCartEmailModalOpen(false);
+  };
+
+  const openDefaultMailAppCart = () => {
     let itemsList = cart.map((item, idx) => `${idx + 1}. ${item.name} (Qty: ${item.quantity})`).join('%0D%0A');
     let subject = encodeURIComponent(`Order Quote Request - ${userInfo.name.trim()}`);
     let body = encodeURIComponent(
@@ -98,6 +122,7 @@ export function Navbar() {
     ) + itemsList + encodeURIComponent(`\n\nTotal Items: ${totalItemsCount}\n\nPlease reply with pricing and shipping timeline.\nThank you!`);
 
     window.location.href = `mailto:vishraglobalexports@gmail.com?subject=${subject}&body=${body}`;
+    setCartEmailModalOpen(false);
   };
 
   return (
@@ -412,7 +437,7 @@ export function Navbar() {
 
                   <Button 
                     type="button"
-                    onClick={handleFinalSubmitEmail}
+                    onClick={handleOpenCartEmailModal}
                     className="w-full h-12 bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-teal-500/25"
                   >
                     <Mail size={18} />
@@ -425,6 +450,66 @@ export function Navbar() {
           </div>
         </div>
       )}
+
+      {/* CART EMAIL POPUP MODAL */}
+      <AnimatePresence>
+        {cartEmailModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="w-full max-w-md bg-[#252525] border border-white/15 rounded-2xl p-6 shadow-2xl relative"
+            >
+              <button 
+                onClick={() => setCartEmailModalOpen(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-3 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-white">Send Order Quote Email</h3>
+                  <p className="text-xs text-teal-400 font-semibold">{totalItemsCount} item(s) in Cart</p>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-300 mb-6 leading-relaxed">
+                How would you like to send your cart quote request to <span className="text-white font-bold">vishraglobalexports@gmail.com</span>?
+              </p>
+
+              <div className="space-y-3">
+                {/* Option 1: Open Gmail in Browser */}
+                <Button
+                  onClick={openGmailWebCart}
+                  className="w-full h-12 bg-red-600 hover:bg-red-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 transition-all"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Open Gmail in Browser
+                </Button>
+
+                {/* Option 2: Open Default Mail App */}
+                <Button
+                  onClick={openDefaultMailAppCart}
+                  variant="outline"
+                  className="w-full h-12 bg-white/5 border-white/20 hover:bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all"
+                >
+                  <Mail className="w-4 h-4 text-teal-400" />
+                  Open Default Mail App
+                </Button>
+              </div>
+
+              <p className="text-[11px] text-slate-500 text-center mt-4">
+                Target: vishraglobalexports@gmail.com
+              </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
