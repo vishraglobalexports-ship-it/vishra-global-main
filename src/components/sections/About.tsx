@@ -219,11 +219,11 @@ export function About() {
           </div>
 
           <div className="max-w-4xl mx-auto bg-[#242424] rounded-3xl p-8 md:p-12 border border-white/10 shadow-2xl flex flex-col md:flex-row items-center gap-8 md:gap-12">
-            <div className="w-48 h-48 md:w-56 md:h-56 shrink-0 rounded-2xl overflow-hidden border-2 border-cyan-400/40 shadow-xl relative">
+            <div className="w-52 h-64 md:w-60 md:h-72 shrink-0 rounded-2xl overflow-hidden border-2 border-cyan-400/40 shadow-xl relative bg-[#1c1c1c]">
               <img 
                 src="/director.jpeg" 
                 alt="R.J.SHEPHERD - DIRECTOR" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
             </div>
