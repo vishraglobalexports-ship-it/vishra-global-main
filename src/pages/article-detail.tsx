@@ -23,6 +23,35 @@ export default function ArticleDetailPage() {
 
   return (
     <main className="min-h-screen bg-[#181818] text-white font-sans selection:bg-teal-500 selection:text-black">
+      {/* Dynamic Article JSON-LD Schema for Googlebot Indexing */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            "headline": article.title,
+            "description": article.excerpt,
+            "image": `https://vishraglobal.com${article.image}`,
+            "author": {
+              "@type": "Organization",
+              "name": "Vishra Global Exports",
+              "url": "https://vishraglobal.com"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Vishra Global Exports",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://vishraglobal.com/logo.png"
+              }
+            },
+            "datePublished": "2026-07-26",
+            "dateModified": "2026-07-26",
+            "mainEntityOfPage": `https://vishraglobal.com/articles/${article.slug}`
+          })
+        }}
+      />
       <Navbar />
 
       {/* ARTICLE HEADER */}
