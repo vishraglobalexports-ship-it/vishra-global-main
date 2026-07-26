@@ -95,13 +95,7 @@ const defaultSeafoodProducts: Product[] = [
     description: "Raw boneless white meat skinless fillets & steaks (Tilapia, Pangasius, Rohu), IQF flash frozen under strict international hygiene standards.",
     image: "/products/fish-white-meat.png",
     category: "seafood",
-    subcategory: "Fish Products",
-    varieties: [
-      "Tilapia Skinless Fillets",
-      "Pangasius Boneless Fillets",
-      "Rohu Steaks",
-      "White Meat IQF Portion Packs"
-    ]
+    subcategory: "Fish Products"
   },
   {
     id: 10,
@@ -109,13 +103,7 @@ const defaultSeafoodProducts: Product[] = [
     description: "Raw sashimi & export grade boneless red meat steaks & loins (Yellowfin Tuna, Swordfish), ultra-flash frozen.",
     image: "/products/fish-red-meat.png",
     category: "seafood",
-    subcategory: "Fish Products",
-    varieties: [
-      "Yellowfin Tuna Loins",
-      "Sashimi Saku Blocks",
-      "Tuna Steaks",
-      "Swordfish Steaks"
-    ]
+    subcategory: "Fish Products"
   }
 ];
 
@@ -262,7 +250,8 @@ const sanitizeSeafoodSubcategories = (items: Product[]): Product[] => {
                      name.includes('fish') || name.includes('tuna') || name.includes('fillet') || name.includes('rohu') || name.includes('catla');
       return {
         ...p,
-        subcategory: isFish ? 'Fish Products' : 'Shrimp & Prawns'
+        subcategory: isFish ? 'Fish Products' : 'Shrimp & Prawns',
+        varieties: isFish ? undefined : p.varieties
       };
     }
     return p;
@@ -270,7 +259,7 @@ const sanitizeSeafoodSubcategories = (items: Product[]): Product[] => {
 };
 
 const allDefaultProducts = sanitizeSeafoodSubcategories([...defaultSeafoodProducts, ...defaultAgriProducts]);
-const CURRENT_VERSION = 'v14_seafood_two_clean_rows';
+const CURRENT_VERSION = 'v15_remove_fish_varieties';
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
