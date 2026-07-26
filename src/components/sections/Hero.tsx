@@ -127,14 +127,15 @@ export function Hero() {
               </span>
             </motion.div>
 
-            {/* Headline */}
+            {/* Headline with Brand Name for SEO Ranking */}
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight mb-6 drop-shadow-lg">
-              Delivering Pristine Ocean Wealth To <span className="bg-gradient-to-r from-teal-400 via-emerald-300 to-teal-200 bg-clip-text text-transparent">Global Markets.</span>
+              <span className="block text-teal-400 font-extrabold text-lg sm:text-2xl lg:text-3xl tracking-widest uppercase mb-2">Vishra Global Exports</span>
+              Delivering Pristine Ocean Wealth & Premium Rice To <span className="bg-gradient-to-r from-teal-400 via-emerald-300 to-teal-200 bg-clip-text text-transparent">Global Markets.</span>
             </h1>
 
             {/* Subheading */}
             <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-8 max-w-xl leading-relaxed">
-              Export-ready Vannamei Shrimp, Black Tiger, Freshwater Fish & Premium Rice directly from Eluru, Andhra Pradesh to global markets.
+              Vishra Global Exports (Vishra Exports) — Premier exporter of 1121 Basmati Rice, Sona Masuri, Vannamei Shrimp, Black Tiger Prawns & Fish from Eluru, Andhra Pradesh to 50+ countries.
             </p>
 
             {/* CTA Buttons */}
