@@ -1,6 +1,6 @@
 import { useRoute } from 'wouter';
 import { motion } from 'framer-motion';
-import { ARTICLES } from '@/data/articles';
+import { useArticles } from '@/context/ArticlesContext';
 import { Navbar } from '@/components/sections/Navbar';
 import { Footer } from '@/components/sections/Footer';
 import { Button } from '@/components/ui/button';
@@ -11,14 +11,15 @@ import NotFound from '@/pages/not-found';
 export default function ArticleDetailPage() {
   const [, params] = useRoute('/articles/:slug');
   const slug = params?.slug;
+  const { articles } = useArticles();
 
-  const article = ARTICLES.find(a => a.slug === slug);
+  const article = articles.find(a => a.slug === slug);
 
   if (!article) {
     return <NotFound />;
   }
 
-  const relatedArticles = ARTICLES.filter(a => a.slug !== article.slug).slice(0, 3);
+  const relatedArticles = articles.filter(a => a.slug !== article.slug).slice(0, 3);
 
   return (
     <main className="min-h-screen bg-[#181818] text-white font-sans selection:bg-teal-500 selection:text-black">

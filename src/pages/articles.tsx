@@ -5,15 +5,16 @@ import { Navbar } from '@/components/sections/Navbar';
 import { Footer } from '@/components/sections/Footer';
 import { Button } from '@/components/ui/button';
 import { Link } from 'wouter';
-import { ARTICLES, Article } from '@/data/articles';
+import { useArticles } from '@/context/ArticlesContext';
 
 export default function ArticlesPage() {
+  const { articles } = useArticles();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const categories = ['All', 'Agri Exports', 'Seafood Exports', 'Trade & Logistics', 'Quality & Compliance'];
 
-  const filteredArticles = ARTICLES.filter(art => {
+  const filteredArticles = articles.filter(art => {
     const matchesCategory = selectedCategory === 'All' || art.category === selectedCategory;
     const matchesSearch = art.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           art.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -1,19 +1,23 @@
 import { useState, useRef } from 'react';
 import { useProducts, type Product } from '@/context/ProductsContext';
+import { useArticles } from '@/context/ArticlesContext';
+import { Article } from '@/data/articles';
 import { Button } from '@/components/ui/button';
 import { 
   Trash2, Pencil, X, Check, ArrowLeft, Fish, Wheat, ShieldAlert, 
-  Plus, Upload, Image, RotateCcw, ChevronDown, Eye, EyeOff
+  Plus, Upload, Image, RotateCcw, ChevronDown, Eye, EyeOff, BookOpen, FileText
 } from 'lucide-react';
 import { Link } from 'wouter';
 import { motion, AnimatePresence } from 'framer-motion';
 
 function ImageUploader({ 
   currentImage, 
-  onImageChange 
+  onImageChange,
+  label = "Section Image"
 }: { 
   currentImage: string; 
   onImageChange: (dataUrl: string) => void;
+  label?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragActive, setDragActive] = useState(false);
@@ -21,14 +25,13 @@ function ImageUploader({
   const processFile = (file: File) => {
     if (!file.type.startsWith('image/')) return;
     
-    // Compress image using canvas to prevent localStorage overflow
     const reader = new FileReader();
     reader.onload = (e) => {
       if (!e.target?.result) return;
       const img = document.createElement('img');
       img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX_SIZE = 800;
+        const MAX_SIZE = 900;
         let width = img.width;
         let height = img.height;
         
@@ -46,8 +49,7 @@ function ImageUploader({
         if (!ctx) return;
         ctx.drawImage(img, 0, 0, width, height);
         
-        // Compress to JPEG at 0.7 quality (~50-100KB typically)
-        const compressed = canvas.toDataURL('image/jpeg', 0.7);
+        const compressed = canvas.toDataURL('image/jpeg', 0.75);
         onImageChange(compressed);
       };
       img.src = e.target.result as string;
@@ -65,11 +67,11 @@ function ImageUploader({
 
   return (
     <div className="space-y-2">
-      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Section Image</label>
+      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">{label}</label>
       <div className="flex gap-3 items-start">
         {/* Preview */}
-        <div className="w-24 h-24 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a]">
-          <img src={currentImage} alt="Preview" className="w-full h-full object-cover" />
+        <div className="w-24 h-24 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a] flex items-center justify-center">
+          <img src={currentImage} alt="Preview" className="w-full h-full object-contain" />
         </div>
 
         {/* Upload area */}
@@ -86,7 +88,7 @@ function ImageUploader({
         >
           <Upload className="w-6 h-6 text-slate-500 mx-auto mb-1.5" />
           <p className="text-xs text-slate-400">
-            <span className="text-teal-400 font-semibold">Click to upload</span> or drag & drop
+            <span className="text-teal-400 font-semibold">Click to upload banner</span> or drag & drop
           </p>
           <p className="text-[10px] text-slate-600 mt-0.5">JPG, PNG, WebP (max 5MB)</p>
         </div>
@@ -116,13 +118,11 @@ function AddProductPanel({
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<'seafood' | 'agri'>('seafood');
   const [subcategory, setSubcategory] = useState('');
-  const [categoryOpen, setCategoryOpen] = useState(false);
 
   const canSave = name.trim() && description.trim();
 
   const handleSave = () => {
     if (!canSave) return;
-    // Auto-assign the subcategory's existing image
     const subcatName = subcategory.trim() || undefined;
     const existingImage = existingProducts.find(p => p.category === category && p.subcategory === subcatName)?.image || '/logo.png';
     onAdd({ name: name.trim(), description: description.trim(), image: existingImage, category, subcategory: subcatName });
@@ -147,7 +147,6 @@ function AddProductPanel({
           </button>
         </div>
 
-        {/* Name */}
         <div>
           <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Product Name</label>
           <input
@@ -159,7 +158,6 @@ function AddProductPanel({
           />
         </div>
 
-        {/* Description */}
         <div>
           <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Description</label>
           <textarea
@@ -171,80 +169,6 @@ function AddProductPanel({
           />
         </div>
 
-        {/* Info: Image is managed at subcategory level */}
-        <div className="bg-[#1a1a1a] border border-white/10 rounded-lg p-3 flex items-center gap-2">
-          <Image className="w-4 h-4 text-slate-500 shrink-0" />
-          <p className="text-xs text-slate-400">Image is managed at the section level. Change it from the section header in the product list below.</p>
-        </div>
-
-        {/* Subcategory Dropdown & Input */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
-            Section / Subcategory
-          </label>
-          <div className="space-y-2">
-            <select
-              value={subcategory}
-              onChange={(e) => setSubcategory(e.target.value)}
-              className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all cursor-pointer"
-            >
-              <option value="">-- Select Existing Subcategory --</option>
-              {Array.from(new Set(existingProducts.filter(p => p.category === category).map(p => p.subcategory).filter(Boolean))).map((sub) => (
-                <option key={sub} value={sub}>{sub}</option>
-              ))}
-              <option value="__custom__">+ Type New Subcategory...</option>
-            </select>
-
-            {/* Custom Subcategory Text Input if custom selected or typing new */}
-            {(subcategory === '__custom__' || (!Array.from(new Set(existingProducts.map(p => p.subcategory).filter(Boolean))).includes(subcategory) && subcategory !== '')) && (
-              <input
-                type="text"
-                value={subcategory === '__custom__' ? '' : subcategory}
-                onChange={(e) => setSubcategory(e.target.value)}
-                placeholder="Enter new subcategory name..."
-                autoFocus
-                className="w-full bg-[#1e1e1e] text-teal-300 border border-teal-500/40 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all placeholder:text-slate-500 font-semibold"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Category Selector */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Division / Category</label>
-          <div className="relative">
-            <button 
-              onClick={() => setCategoryOpen(!categoryOpen)}
-              className="w-full flex items-center justify-between bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-2.5 text-sm text-white hover:border-white/30 transition-all"
-            >
-              <span className="flex items-center gap-2">
-                {category === 'seafood' 
-                  ? <><Fish className="w-4 h-4 text-teal-400" /> Seafood Division</> 
-                  : <><Wheat className="w-4 h-4 text-amber-400" /> Agricultural Division</>
-                }
-              </span>
-              <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${categoryOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {categoryOpen && (
-              <div className="absolute z-20 top-full mt-1 left-0 right-0 bg-[#1e1e1e] border border-white/15 rounded-lg overflow-hidden shadow-xl">
-                <button 
-                  onClick={() => { setCategory('seafood'); setCategoryOpen(false); }}
-                  className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 hover:bg-white/5 transition-colors ${category === 'seafood' ? 'text-teal-400' : 'text-white'}`}
-                >
-                  <Fish className="w-4 h-4" /> Seafood Division
-                </button>
-                <button 
-                  onClick={() => { setCategory('agri'); setCategoryOpen(false); }}
-                  className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 hover:bg-white/5 transition-colors ${category === 'agri' ? 'text-amber-400' : 'text-white'}`}
-                >
-                  <Wheat className="w-4 h-4" /> Agricultural Division
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Actions */}
         <div className="flex gap-3 pt-2">
           <Button
             onClick={handleSave}
@@ -268,17 +192,18 @@ function AddProductPanel({
 
 export default function AdminPage() {
   const { products, addProduct, updateProduct, deleteProduct, resetProducts, getSeafoodProducts, getAgriProducts, updateSubcategoryImage, getSubcategoryImage } = useProducts();
+  const { articles, updateArticle, updateArticleBanner, resetArticles } = useArticles();
+
+  // Active Admin Tab State
+  const [activeTab, setActiveTab] = useState<'products' | 'articles'>('products');
 
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     return sessionStorage.getItem('vishra_admin_auth') === 'true';
   });
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [authError, setAuthError] = useState('');
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const DEFAULT_EMAIL = 'vishraglobalexports@gmail.com';
   const DEFAULT_PASS = 'Rjshepherd@1994';
@@ -290,13 +215,11 @@ export default function AdminPage() {
     const inputEmail = email.trim().toLowerCase();
     const inputPass = password.trim();
 
-    if (authMode === 'login' || authMode === 'signup') {
-      if (inputEmail === DEFAULT_EMAIL && inputPass === DEFAULT_PASS) {
-        setIsAuthenticated(true);
-        sessionStorage.setItem('vishra_admin_auth', 'true');
-      } else {
-        setAuthError('Invalid credentials! Please use valid admin email & password.');
-      }
+    if (inputEmail === DEFAULT_EMAIL && inputPass === DEFAULT_PASS) {
+      setIsAuthenticated(true);
+      sessionStorage.setItem('vishra_admin_auth', 'true');
+    } else {
+      setAuthError('Invalid credentials! Please use valid admin email & password.');
     }
   };
 
@@ -307,12 +230,38 @@ export default function AdminPage() {
     setPassword('');
   };
 
+  // Product Edit State
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<{ name: string; description: string; image: string; category: 'seafood' | 'agri'; subcategory: string }>({ name: '', description: '', image: '', category: 'seafood', subcategory: '' });
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
-  const [categoryDropOpen, setCategoryDropOpen] = useState(false);
+
+  // Article Edit State
+  const [editingArticleSlug, setEditingArticleSlug] = useState<string | null>(null);
+  const [articleEditForm, setArticleEditForm] = useState<{ title: string; excerpt: string; readTime: string; keywordsStr: string }>({ title: '', excerpt: '', readTime: '', keywordsStr: '' });
+
+  const startArticleEdit = (art: Article) => {
+    setEditingArticleSlug(art.slug);
+    setArticleEditForm({
+      title: art.title,
+      excerpt: art.excerpt,
+      readTime: art.readTime,
+      keywordsStr: art.keywords.join(', ')
+    });
+  };
+
+  const saveArticleEdit = () => {
+    if (!editingArticleSlug) return;
+    const keywordsArr = articleEditForm.keywordsStr.split(',').map(k => k.trim()).filter(Boolean);
+    updateArticle(editingArticleSlug, {
+      title: articleEditForm.title.trim(),
+      excerpt: articleEditForm.excerpt.trim(),
+      readTime: articleEditForm.readTime.trim(),
+      keywords: keywordsArr
+    });
+    setEditingArticleSlug(null);
+  };
 
   const startEdit = (product: Product) => {
     setEditingId(product.id);
@@ -322,7 +271,6 @@ export default function AdminPage() {
   const cancelEdit = () => {
     setEditingId(null);
     setEditForm({ name: '', description: '', image: '', category: 'seafood', subcategory: '' });
-    setCategoryDropOpen(false);
   };
 
   const saveEdit = () => {
@@ -337,228 +285,13 @@ export default function AdminPage() {
     cancelEdit();
   };
 
-  const confirmDelete = (id: number) => {
-    deleteProduct(id);
-    setDeleteConfirmId(null);
-  };
-
-  const handleAddProduct = (product: Omit<Product, 'id'>) => {
-    addProduct(product);
-    setShowAddPanel(false);
-  };
-
-  const renderProductRow = (product: Product) => {
-    const isEditing = editingId === product.id;
-    const isDeleting = deleteConfirmId === product.id;
-
-    return (
-      <motion.div
-        key={product.id}
-        layout
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, x: -40, height: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-[#252525] rounded-xl border border-white/10 overflow-hidden"
-      >
-        {isEditing ? (
-          /* ── EDIT MODE ── */
-          <div className="p-6 space-y-5">
-            <div className="flex items-center justify-between mb-1">
-              <h4 className="text-sm font-bold text-teal-400 uppercase tracking-wider flex items-center gap-2">
-                <Pencil className="w-4 h-4" /> Editing Product
-              </h4>
-              <button onClick={cancelEdit} className="text-slate-400 hover:text-white transition-colors">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Image Uploader */}
-            <ImageUploader 
-              currentImage={editForm.image || product.image} 
-              onImageChange={(newImage) => setEditForm(f => ({ ...f, image: newImage }))} 
-            />
-
-            {/* Name */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Product Name</label>
-              <input
-                type="text"
-                value={editForm.name}
-                onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
-                className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Description</label>
-              <textarea
-                value={editForm.description}
-                onChange={(e) => setEditForm((f) => ({ ...f, description: e.target.value }))}
-                rows={3}
-                className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all resize-none"
-              />
-            </div>
-
-            {/* Subcategory */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
-                Section / Subcategory
-              </label>
-              <div className="space-y-2">
-                <select
-                  value={editForm.subcategory}
-                  onChange={(e) => setEditForm((f) => ({ ...f, subcategory: e.target.value }))}
-                  className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all cursor-pointer"
-                >
-                  <option value="">-- Select Existing Subcategory --</option>
-                  {Array.from(new Set(products.filter(p => p.category === editForm.category).map(p => p.subcategory).filter(Boolean))).map((sub) => (
-                    <option key={sub} value={sub}>{sub}</option>
-                  ))}
-                  <option value="__custom__">+ Type New Subcategory...</option>
-                </select>
-
-                {(editForm.subcategory === '__custom__' || (!Array.from(new Set(products.map(p => p.subcategory).filter(Boolean))).includes(editForm.subcategory) && editForm.subcategory !== '')) && (
-                  <input
-                    type="text"
-                    value={editForm.subcategory === '__custom__' ? '' : editForm.subcategory}
-                    onChange={(e) => setEditForm((f) => ({ ...f, subcategory: e.target.value }))}
-                    placeholder="Enter new subcategory name..."
-                    autoFocus
-                    className="w-full bg-[#1e1e1e] text-teal-300 border border-teal-500/40 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all font-semibold"
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Category */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Division / Category</label>
-              <div className="relative">
-                <button 
-                  onClick={() => setCategoryDropOpen(!categoryDropOpen)}
-                  className="w-full flex items-center justify-between bg-[#1a1a1a] border border-white/15 rounded-lg px-4 py-2.5 text-sm text-white hover:border-white/30 transition-all"
-                >
-                  <span className="flex items-center gap-2">
-                    {editForm.category === 'seafood' 
-                      ? <><Fish className="w-4 h-4 text-teal-400" /> Seafood Division</> 
-                      : <><Wheat className="w-4 h-4 text-amber-400" /> Agricultural Division</>
-                    }
-                  </span>
-                  <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${categoryDropOpen ? 'rotate-180' : ''}`} />
-                </button>
-                {categoryDropOpen && (
-                  <div className="absolute z-20 top-full mt-1 left-0 right-0 bg-[#1e1e1e] border border-white/15 rounded-lg overflow-hidden shadow-xl">
-                    <button 
-                      onClick={() => { setEditForm(f => ({...f, category: 'seafood'})); setCategoryDropOpen(false); }}
-                      className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 hover:bg-white/5 transition-colors ${editForm.category === 'seafood' ? 'text-teal-400' : 'text-white'}`}
-                    >
-                      <Fish className="w-4 h-4" /> Seafood Division
-                    </button>
-                    <button 
-                      onClick={() => { setEditForm(f => ({...f, category: 'agri'})); setCategoryDropOpen(false); }}
-                      className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 hover:bg-white/5 transition-colors ${editForm.category === 'agri' ? 'text-amber-400' : 'text-white'}`}
-                    >
-                      <Wheat className="w-4 h-4" /> Agricultural Division
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Save / Cancel */}
-            <div className="flex gap-3 pt-2">
-              <Button
-                onClick={saveEdit}
-                className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm h-11 px-8"
-              >
-                <Check className="w-4 h-4 mr-2" /> Save Changes
-              </Button>
-              <Button
-                onClick={cancelEdit}
-                variant="outline"
-                className="text-slate-300 border-white/20 hover:bg-white/10 font-semibold text-sm h-11 px-6"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        ) : (
-          /* ── VIEW MODE ── */
-          <div className="flex items-center gap-4 p-4">
-            <div className="w-2 h-12 rounded-full bg-white/10 shrink-0" />
-
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <h4 className="text-base font-bold text-white truncate">{product.name}</h4>
-                {product.subcategory && (
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-slate-500 border border-white/10">
-                    {product.subcategory}
-                  </span>
-                )}
-              </div>
-              <p className="text-sm text-slate-400 line-clamp-1">{product.description}</p>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              {isDeleting ? (
-                <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
-                  <span className="text-xs text-red-300 font-semibold">Delete?</span>
-                  <button
-                    onClick={() => confirmDelete(product.id)}
-                    className="bg-red-500 hover:bg-red-400 text-white rounded-md px-3 py-1 text-xs font-bold transition-colors"
-                  >
-                    Yes
-                  </button>
-                  <button
-                    onClick={() => setDeleteConfirmId(null)}
-                    className="bg-white/10 hover:bg-white/20 text-white rounded-md px-3 py-1 text-xs font-bold transition-colors"
-                  >
-                    No
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <button
-                    onClick={() => startEdit(product)}
-                    className="p-2.5 rounded-lg bg-white/5 hover:bg-teal-500/15 border border-white/10 hover:border-teal-500/30 text-slate-300 hover:text-teal-400 transition-all"
-                    title="Edit"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setDeleteConfirmId(product.id)}
-                    className="p-2.5 rounded-lg bg-white/5 hover:bg-red-500/15 border border-white/10 hover:border-red-500/30 text-slate-300 hover:text-red-400 transition-all"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-      </motion.div>
-    );
-  };
-
   const seafood = getSeafoodProducts();
   const agri = getAgriProducts();
 
   if (!isAuthenticated) {
     return (
       <main className="min-h-screen w-full bg-[#181818] text-white flex items-center justify-center p-4 font-sans relative overflow-hidden">
-        {/* Ambient background blur */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md bg-[#222] border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10"
-        >
-          {/* Header */}
+        <div className="w-full max-w-md bg-[#222] border border-white/10 rounded-2xl p-8 shadow-2xl relative z-10">
           <div className="text-center mb-8">
             <Link href="/">
               <button className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors mb-4">
@@ -572,7 +305,6 @@ export default function AdminPage() {
             <p className="text-xs text-slate-400 mt-1">Sign in with authorized admin credentials</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleAuthSubmit} className="space-y-4">
             {authError && (
               <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-semibold">
@@ -589,7 +321,7 @@ export default function AdminPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
               />
             </div>
 
@@ -597,211 +329,263 @@ export default function AdminPage() {
               <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">
                 Password
               </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••••••"
-                  className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors p-1"
-                  title={showPassword ? 'Hide Password' : 'Show Password'}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
+              />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm h-12 rounded-xl shadow-lg shadow-teal-500/20 transition-all mt-2"
-            >
-              Sign In to Admin
+            <Button type="submit" className="w-full bg-teal-500 hover:bg-teal-400 text-[#141414] font-extrabold text-sm h-12 rounded-xl mt-2">
+              Sign In to Admin Dashboard
             </Button>
           </form>
-        </motion.div>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen w-full bg-[#181818] text-white font-sans">
-      {/* Top Bar */}
-      <div className="sticky top-0 z-50 bg-[#181818]/95 backdrop-blur-xl border-b border-white/10">
-        <div className="container mx-auto px-4 md:px-6 flex items-center gap-3 h-14">
-          <Link href="/">
-            <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition-all shrink-0">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-          </Link>
-
-          <div className="flex-1 min-w-0">
-            <h1 className="text-base md:text-lg font-extrabold text-white flex items-center gap-2 whitespace-nowrap">
-              <ShieldAlert className="w-5 h-5 text-teal-400 shrink-0" />
-              Admin Panel
-            </h1>
-            <p className="text-[10px] md:text-[11px] text-slate-500 truncate">{products.length} products · Logged in as Admin</p>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-2 shrink-0">
-            {resetConfirm ? (
-              <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg px-2.5 py-1.5">
-                <span className="text-[11px] text-amber-300 font-semibold whitespace-nowrap">Reset?</span>
-                <button onClick={() => { resetProducts(); setResetConfirm(false); }} className="bg-amber-500 hover:bg-amber-400 text-[#141414] rounded px-2 py-0.5 text-[11px] font-bold transition-colors">Yes</button>
-                <button onClick={() => setResetConfirm(false)} className="bg-white/10 hover:bg-white/20 text-white rounded px-2 py-0.5 text-[11px] font-bold transition-colors">No</button>
-              </div>
-            ) : (
-              <button 
-                onClick={() => setResetConfirm(true)}
-                className="p-2 rounded-lg bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-slate-400 hover:text-amber-400 transition-all shrink-0"
-                title="Reset to defaults"
-              >
-                <RotateCcw className="w-4 h-4" />
+    <main className="min-h-screen bg-[#181818] text-white font-sans selection:bg-teal-500 selection:text-black">
+      
+      {/* Top Header */}
+      <div className="bg-[#202020] border-b border-white/10 sticky top-0 z-30 backdrop-blur-xl bg-[#202020]/90">
+        <div className="container mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+          
+          <div className="flex items-center gap-3">
+            <Link href="/">
+              <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors">
+                <ArrowLeft className="w-4 h-4" />
               </button>
-            )}
+            </Link>
+            <div>
+              <h1 className="text-base font-black text-white leading-tight">Vishra Global Admin</h1>
+              <p className="text-[10px] text-teal-400 font-semibold tracking-wider uppercase">Products & Articles Management</p>
+            </div>
+          </div>
 
-            <Button
-              onClick={() => setShowAddPanel(!showAddPanel)}
-              className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-xs h-9 px-2.5 sm:px-4 shrink-0"
-            >
-              <Plus className="w-4 h-4 sm:mr-1.5" /><span className="hidden sm:inline">Add Product</span>
-            </Button>
-
+          {/* Admin Navigation Tabs */}
+          <div className="flex items-center bg-[#181818] p-1 rounded-xl border border-white/10">
             <button
-              onClick={handleLogout}
-              className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 transition-all text-xs font-bold shrink-0"
-              title="Log Out"
+              onClick={() => setActiveTab('products')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'products' ? 'bg-teal-500 text-[#141414] shadow-md' : 'text-slate-400 hover:text-white'
+              }`}
             >
-              Logout
+              <Fish className="w-3.5 h-3.5" /> Products & Sections
+            </button>
+            <button
+              onClick={() => setActiveTab('articles')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'articles' ? 'bg-amber-400 text-[#141414] shadow-md' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" /> Articles & Banners (10)
             </button>
           </div>
+
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 transition-all text-xs font-bold shrink-0"
+          >
+            Logout
+          </button>
         </div>
       </div>
 
       <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">
 
-        {/* Add Product Panel */}
-        <AnimatePresence>
-          {showAddPanel && (
-            <AddProductPanel 
-              existingProducts={products}
-              onAdd={handleAddProduct} 
-              onCancel={() => setShowAddPanel(false)} 
-            />
-          )}
-        </AnimatePresence>
-
-        {/* SEAFOOD SECTION */}
-        <div>
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-            <div className="p-2.5 rounded-xl bg-teal-500/10 text-teal-400 border border-teal-500/20">
-              <Fish className="w-5 h-5" />
+        {/* ── TAB 1: PRODUCTS & SECTION BANNERS ── */}
+        {activeTab === 'products' && (
+          <div className="space-y-8">
+            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div>
+                <h2 className="text-xl font-extrabold text-white">Product Catalog & Section Images</h2>
+                <p className="text-xs text-slate-400">Manage 18 default product cards and section banner images</p>
+              </div>
+              <div className="flex items-center gap-3">
+                {resetConfirm ? (
+                  <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg px-2.5 py-1.5">
+                    <span className="text-[11px] text-amber-300 font-semibold">Reset Products?</span>
+                    <button onClick={() => { resetProducts(); setResetConfirm(false); }} className="bg-amber-500 text-[#141414] rounded px-2 py-0.5 text-[11px] font-bold">Yes</button>
+                    <button onClick={() => setResetConfirm(false)} className="bg-white/10 text-white rounded px-2 py-0.5 text-[11px] font-bold">No</button>
+                  </div>
+                ) : (
+                  <button onClick={() => setResetConfirm(true)} className="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-amber-400">
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                )}
+                <Button onClick={() => setShowAddPanel(!showAddPanel)} className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-xs">
+                  <Plus className="w-4 h-4 mr-1" /> Add Product
+                </Button>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-extrabold text-white">Seafood Division</h2>
-              <p className="text-xs text-slate-500">{seafood.length} total item(s)</p>
-            </div>
-          </div>
 
-          <div className="space-y-8 pl-0 md:pl-2">
-            {Array.from(new Set(seafood.map(p => p.subcategory || 'Seafood Products'))).map((subcat) => {
-              const subItems = seafood.filter(p => (p.subcategory || 'Seafood Products') === subcat);
-              const sectionImage = getSubcategoryImage('seafood', subcat, subItems[0]?.image || '/logo.png');
-              return (
-                <div key={subcat} className="space-y-3">
-                  {/* Section header with image upload */}
-                  <div className="bg-[#222] rounded-xl border border-teal-500/20 p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a]">
-                        <img src={sectionImage} alt={subcat} className="w-full h-full object-cover" />
+            {/* SEAFOOD SECTION */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-bold text-teal-400 flex items-center gap-2">
+                <Fish className="w-5 h-5" /> Seafood Division ({seafood.length} items)
+              </h3>
+              {Array.from(new Set(seafood.map(p => p.subcategory || 'Seafood Products'))).map((subcat) => {
+                const subItems = seafood.filter(p => (p.subcategory || 'Seafood Products') === subcat);
+                const sectionImage = getSubcategoryImage('seafood', subcat, subItems[0]?.image || '/logo.png');
+                return (
+                  <div key={subcat} className="bg-[#222] rounded-xl border border-teal-500/20 p-5 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
+                      <div>
+                        <span className="text-base font-extrabold text-teal-400">{subcat}</span>
+                        <span className="text-xs text-slate-400 ml-2">({subItems.length} product cards)</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-teal-400 uppercase tracking-wider">{subcat}</span>
-                          <span className="text-[10px] text-slate-400 font-normal">({subItems.length} varieties)</span>
-                        </div>
-                        <p className="text-[10px] text-slate-500 mt-0.5">This image represents all varieties in this section</p>
-                      </div>
-                      <div className="shrink-0">
+                      <div className="w-full sm:w-auto">
                         <ImageUploader
+                          label={`Upload Banner for ${subcat}`}
                           currentImage={sectionImage}
                           onImageChange={(dataUrl) => updateSubcategoryImage('seafood', subcat, dataUrl)}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <AnimatePresence>
-                      {subItems.map((p) => renderProductRow(p))}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              );
-            })}
-            {seafood.length === 0 && (
-              <p className="text-center text-slate-500 py-8 text-sm">No seafood products. Click "Add Product" to create one.</p>
-            )}
-          </div>
-        </div>
-
-        {/* AGRI SECTION */}
-        <div>
-          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-            <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
-              <Wheat className="w-5 h-5" />
+                );
+              })}
             </div>
-            <div>
-              <h2 className="text-xl font-extrabold text-white">Agricultural Division</h2>
-              <p className="text-xs text-slate-500">{agri.length} total item(s)</p>
-            </div>
-          </div>
 
-          <div className="space-y-8 pl-0 md:pl-2">
-            {Array.from(new Set(agri.map(p => p.subcategory || 'Agro Products'))).map((subcat) => {
-              const subItems = agri.filter(p => (p.subcategory || 'Agro Products') === subcat);
-              const sectionImage = getSubcategoryImage('agri', subcat, subItems[0]?.image || '/logo.png');
-              return (
-                <div key={subcat} className="space-y-3">
-                  {/* Section header with image upload */}
-                  <div className="bg-[#222] rounded-xl border border-amber-500/20 p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a]">
-                        <img src={sectionImage} alt={subcat} className="w-full h-full object-cover" />
+            {/* AGRI SECTION */}
+            <div className="space-y-4 pt-4">
+              <h3 className="text-lg font-bold text-amber-400 flex items-center gap-2">
+                <Wheat className="w-5 h-5" /> Agricultural Division ({agri.length} items)
+              </h3>
+              {Array.from(new Set(agri.map(p => p.subcategory || 'Agro Products'))).map((subcat) => {
+                const subItems = agri.filter(p => (p.subcategory || 'Agro Products') === subcat);
+                const sectionImage = getSubcategoryImage('agri', subcat, subItems[0]?.image || '/logo.png');
+                return (
+                  <div key={subcat} className="bg-[#222] rounded-xl border border-amber-500/20 p-5 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
+                      <div>
+                        <span className="text-base font-extrabold text-amber-400">{subcat}</span>
+                        <span className="text-xs text-slate-400 ml-2">({subItems.length} product cards)</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold text-amber-400 uppercase tracking-wider">{subcat}</span>
-                          <span className="text-[10px] text-slate-400 font-normal">({subItems.length} varieties)</span>
-                        </div>
-                        <p className="text-[10px] text-slate-500 mt-0.5">This image represents all varieties in this section</p>
-                      </div>
-                      <div className="shrink-0">
+                      <div className="w-full sm:w-auto">
                         <ImageUploader
+                          label={`Upload Banner for ${subcat}`}
                           currentImage={sectionImage}
                           onImageChange={(dataUrl) => updateSubcategoryImage('agri', subcat, dataUrl)}
                         />
                       </div>
                     </div>
                   </div>
-                  <div className="space-y-3">
-                    <AnimatePresence>
-                      {subItems.map((p) => renderProductRow(p))}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              );
-            })}
-            {agri.length === 0 && (
-              <p className="text-center text-slate-500 py-8 text-sm">No agricultural products. Click "Add Product" to create one.</p>
-            )}
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* ── TAB 2: EXPORT ARTICLES & BANNERS MANAGER ── */}
+        {activeTab === 'articles' && (
+          <div className="space-y-8">
+            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div>
+                <h2 className="text-xl font-extrabold text-white">Export Articles & Banners Manager</h2>
+                <p className="text-xs text-slate-400">Edit titles, excerpts, read time, SEO tags, and upload custom banners for all 10 articles</p>
+              </div>
+              <Button onClick={() => resetArticles()} variant="outline" className="border-amber-400/40 text-amber-400 hover:bg-amber-400/10 text-xs font-bold">
+                <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Articles to Defaults
+              </Button>
+            </div>
+
+            <div className="space-y-6">
+              {articles.map((art) => {
+                const isEditing = editingArticleSlug === art.slug;
+                return (
+                  <div key={art.slug} className="bg-[#222] rounded-2xl border border-white/10 p-6 space-y-5 shadow-xl">
+                    <div className="flex flex-col lg:flex-row gap-6 items-start">
+                      
+                      {/* Banner Image Uploader */}
+                      <div className="w-full lg:w-1/3 shrink-0">
+                        <ImageUploader
+                          label={`Article Banner (${art.category})`}
+                          currentImage={art.image}
+                          onImageChange={(dataUrl) => updateArticleBanner(art.slug, dataUrl)}
+                        />
+                      </div>
+
+                      {/* Article Details & Editing Form */}
+                      <div className="flex-1 w-full space-y-4">
+                        {isEditing ? (
+                          <div className="space-y-4 bg-[#1a1a1a] p-4 rounded-xl border border-amber-400/30">
+                            <div>
+                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Article Title</label>
+                              <input 
+                                type="text" 
+                                value={articleEditForm.title} 
+                                onChange={(e) => setArticleEditForm(f => ({ ...f, title: e.target.value }))}
+                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Excerpt / Summary</label>
+                              <textarea 
+                                value={articleEditForm.excerpt} 
+                                onChange={(e) => setArticleEditForm(f => ({ ...f, excerpt: e.target.value }))}
+                                rows={2}
+                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 resize-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">SEO Keywords (Comma Separated)</label>
+                              <input 
+                                type="text" 
+                                value={articleEditForm.keywordsStr} 
+                                onChange={(e) => setArticleEditForm(f => ({ ...f, keywordsStr: e.target.value }))}
+                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                              />
+                            </div>
+                            <div className="flex gap-2 pt-2">
+                              <Button onClick={saveArticleEdit} className="bg-amber-400 text-[#141414] font-bold text-xs h-9 px-4">
+                                <Check className="w-3.5 h-3.5 mr-1" /> Save Article
+                              </Button>
+                              <Button onClick={() => setEditingArticleSlug(null)} variant="outline" className="border-white/20 text-slate-300 text-xs h-9 px-4">
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between gap-3">
+                              <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20 uppercase">
+                                {art.category}
+                              </span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-slate-400 font-mono">{art.readTime}</span>
+                                <Button onClick={() => startArticleEdit(art)} size="sm" variant="outline" className="h-8 border-white/15 hover:border-amber-400 text-slate-300 hover:text-amber-400 text-xs font-bold">
+                                  <Pencil className="w-3.5 h-3.5 mr-1" /> Edit Details
+                                </Button>
+                              </div>
+                            </div>
+
+                            <h3 className="text-lg font-extrabold text-white leading-snug">{art.title}</h3>
+                            <p className="text-xs text-slate-300 leading-relaxed">{art.excerpt}</p>
+
+                            <div className="flex flex-wrap gap-1.5 pt-2">
+                              {art.keywords.map((kw, i) => (
+                                <span key={i} className="text-[10px] bg-white/5 text-amber-300/90 px-2.5 py-0.5 rounded-md border border-white/10 font-mono">
+                                  #{kw}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
       </div>
     </main>

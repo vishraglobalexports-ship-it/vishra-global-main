@@ -12,6 +12,7 @@ import ArticleDetailPage from '@/pages/article-detail';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { CartProvider } from '@/context/CartContext';
 import { ProductsProvider } from '@/context/ProductsContext';
+import { ArticlesProvider } from '@/context/ArticlesContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
 import { AnimatePresence } from 'framer-motion';
 import AdminPage from '@/pages/admin';
@@ -46,17 +47,19 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ProductsProvider>
-        <CartProvider>
-          <TooltipProvider>
-            <AnimatePresence mode="wait">
-              {isLoading && <LoadingScreen key="loading" />}
-            </AnimatePresence>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-              <Router />
-            </WouterRouter>
-            <Toaster />
-          </TooltipProvider>
-        </CartProvider>
+        <ArticlesProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <AnimatePresence mode="wait">
+                {isLoading && <LoadingScreen key="loading" />}
+              </AnimatePresence>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+                <Router />
+              </WouterRouter>
+              <Toaster />
+            </TooltipProvider>
+          </CartProvider>
+        </ArticlesProvider>
       </ProductsProvider>
     </QueryClientProvider>
   );
