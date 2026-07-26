@@ -9,7 +9,7 @@ import AboutPage from '@/pages/about';
 import FaqPage from '@/pages/faq';
 import ArticlesPage from '@/pages/articles';
 import ArticleDetailPage from '@/pages/article-detail';
-import { Route, Switch, Router as WouterRouter } from 'wouter';
+import { Route, Switch, Router as WouterRouter, useLocation } from 'wouter';
 import { CartProvider } from '@/context/CartContext';
 import { ProductsProvider } from '@/context/ProductsContext';
 import { ArticlesProvider } from '@/context/ArticlesContext';
@@ -19,18 +19,35 @@ import AdminPage from '@/pages/admin';
 
 const queryClient = new QueryClient();
 
+function PageTracker() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('config', 'G-G41J2KGX42', {
+        page_path: location,
+      });
+    }
+  }, [location]);
+
+  return null;
+}
+
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/products" component={ProductsPage} />
-      <Route path="/about" component={AboutPage} />
-      <Route path="/faq" component={FaqPage} />
-      <Route path="/articles" component={ArticlesPage} />
-      <Route path="/articles/:slug" component={ArticleDetailPage} />
-      <Route path="/admin-vishra-exports" component={AdminPage} />
-      <Route component={NotFound} />
-    </Switch>
+    <>
+      <PageTracker />
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/products" component={ProductsPage} />
+        <Route path="/about" component={AboutPage} />
+        <Route path="/faq" component={FaqPage} />
+        <Route path="/articles" component={ArticlesPage} />
+        <Route path="/articles/:slug" component={ArticleDetailPage} />
+        <Route path="/admin-vishra-exports" component={AdminPage} />
+        <Route component={NotFound} />
+      </Switch>
+    </>
   );
 }
 
