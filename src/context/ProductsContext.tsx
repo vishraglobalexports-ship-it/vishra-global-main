@@ -254,7 +254,7 @@ const defaultAgriProducts: Product[] = [
 ];
 
 const allDefaultProducts = [...defaultSeafoodProducts, ...defaultAgriProducts];
-const CURRENT_VERSION = 'v12_fish_white_red_meat_strict';
+const CURRENT_VERSION = 'v13_purge_stale_subcat_images';
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
@@ -278,6 +278,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     try {
       localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
       localStorage.setItem('vishra_products', JSON.stringify(allDefaultProducts));
+      localStorage.removeItem('vishra_subcat_images');
     } catch (e) {
       console.error('Failed to set localStorage:', e);
     }
@@ -285,14 +286,18 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
   });
 
   const [subcategoryImages, setSubcategoryImages] = useState<Record<string, string>>(() => {
+    const savedVer = localStorage.getItem('vishra_products_ver');
     const saved = localStorage.getItem('vishra_subcat_images');
-    if (saved) {
+    if (savedVer === CURRENT_VERSION && saved) {
       try {
         return JSON.parse(saved);
       } catch (e) {
         console.error('Failed to parse saved subcategory images:', e);
       }
     }
+    try {
+      localStorage.removeItem('vishra_subcat_images');
+    } catch (e) {}
     return {};
   });
 
@@ -324,13 +329,16 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
               allDefaultProducts.forEach((p) => {
                 batch.set(doc(firestore, 'products', String(p.id)), p);
               });
+              batch.set(doc(firestore, 'settings', 'subcategoryImages'), {});
               batch.commit();
             } catch (err) {
               console.error('Failed to auto-purge Firestore products:', err);
             }
             setProducts(allDefaultProducts);
+            setSubcategoryImages({});
             localStorage.setItem('vishra_products', JSON.stringify(allDefaultProducts));
             localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
+            localStorage.removeItem('vishra_subcat_images');
             return;
           }
 
@@ -439,6 +447,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
     setSubcategoryImages({});
     localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
     localStorage.setItem('vishra_products', JSON.stringify(allDefaultProducts));
+    localStorage.removeItem('vishra_subcat_images');
 
     if (db && isFirebaseConfigured) {
       try {
