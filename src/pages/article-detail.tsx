@@ -95,14 +95,16 @@ export default function ArticleDetailPage() {
             </div>
           </article>
 
-          {/* Keywords Tags */}
-          <div className="mt-8 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Keywords:</span>
-            {article.keywords.map((kw, i) => (
-              <span key={i} className="text-xs bg-[#242424] text-slate-300 px-3 py-1 rounded-full border border-white/10">
-                #{kw}
-              </span>
-            ))}
+          {/* SEO Keywords Tags */}
+          <div className="mt-10 p-6 rounded-2xl bg-[#202020] border border-white/10">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-3">SEO Search Index Keywords:</span>
+            <div className="flex flex-wrap gap-2">
+              {article.keywords.map((kw, i) => (
+                <span key={i} className="text-xs bg-[#282828] text-slate-300 px-3.5 py-1.5 rounded-xl border border-white/10 font-mono hover:text-amber-300 hover:border-amber-400/40 transition-colors">
+                  #{kw}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </section>

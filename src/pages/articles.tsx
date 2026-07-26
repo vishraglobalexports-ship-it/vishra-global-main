@@ -111,6 +111,15 @@ export default function ArticlesPage() {
                     <p className="text-slate-300 text-sm leading-relaxed line-clamp-3">
                       {art.excerpt}
                     </p>
+
+                    {/* SEO Keyword Badges */}
+                    <div className="flex flex-wrap gap-1.5 pt-2">
+                      {art.keywords.slice(0, 4).map((kw, i) => (
+                        <span key={i} className="text-[10px] bg-white/5 text-amber-300/80 px-2 py-0.5 rounded-md border border-white/5 font-mono">
+                          #{kw}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="pt-4 border-t border-white/5 flex items-center justify-between">

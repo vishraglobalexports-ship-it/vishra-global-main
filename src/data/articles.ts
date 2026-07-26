@@ -21,32 +21,45 @@ export interface Article {
 export const ARTICLES: Article[] = [
   {
     slug: 'indian-basmati-rice-import-guide',
-    title: 'Complete Guide to Importing Premium Indian Basmati Rice (1121, Pusa 1509 & Sella)',
-    excerpt: 'Master the technical specifications, grain length standards, moisture levels, and container shipping requirements for 1121 Basmati, Pusa 1509, and Golden Sella rice.',
+    title: 'Comprehensive Guide to Importing Premium Indian Basmati Rice (1121, Pusa 1509, Golden & Creamy Sella)',
+    excerpt: 'An exhaustive 15-minute technical guide covering grain elongation ratios, aging protocols, moisture parameters, APEDA quality certification, and 20ft container shipping standards for international rice importers.',
     category: 'Agri Exports',
     date: 'July 26, 2026',
-    readTime: '8 min read',
-    author: 'Vishra Global Exports Trade Desk',
-    image: '/products/photo-basmati-section.svg',
-    keywords: ['1121 basmati rice', 'pusa 1509 basmati', 'golden sella rice', 'basmati rice exporter india', 'vishra global exports'],
+    readTime: '12 min read',
+    author: 'Vishra Global Exports Agricultural Desk',
+    image: '/products/article_basmati_banner.png',
+    keywords: [
+      'vishra global', 'vishra exports', 'vishra global exports', '1121 basmati rice exporter', 
+      'pusa 1509 basmati rice', 'golden sella basmati rice', 'creamy sella basmati', 
+      'indian basmati rice supplier', 'apeda rice exporter india', 'basmati rice 20ft container load',
+      'basmati grain elongation ratio', 'basmati moisture parameter 12.5%', 'sortex clean basmati rice'
+    ],
     content: {
-      intro: 'India accounts for over 70% of the world’s Basmati rice production. Known globally as the "King of Rice," authentic Indian Basmati is renowned for its slender grain length, rich natural aroma, and non-sticky fluffiness upon cooking. At Vishra Global Exports (Vishra Exports), we manage the complete supply chain from milled paddy selection in northern and central plains to final vessel loading at major Indian seaports.',
+      intro: 'India accounts for over 70% of total global Basmati rice production. Celebrated worldwide as the "King of Rice," authentic Indian Basmati is defined by its extra-long slender raw grain length, delicate natural aroma, non-sticky cooking fluffiness, and remarkable elongation upon boiling. At Vishra Global Exports (Vishra Exports), we operate a fully integrated supply chain connecting paddy procurement in the fertile northern and central plains directly to optical Sortex milling, aging, packing, and container dispatch at primary ocean ports.',
       sections: [
         {
-          heading: '1. Technical Specifications of 1121 Extra Long Grain Basmati',
-          body: 'The 1121 Basmati variety holds the world record for longest raw grain length, averaging 8.30 mm to 8.35 mm raw, expanding to over 20 mm upon cooking (2.5x elongation ratio). Moisture content is strictly controlled under 12.5% max, with purity maintained at 95% minimum and zero chalky grains. Admixture is kept below 5%, with 100% optical camera Sortex cleaning.'
+          heading: '1. Technical Specifications of 1121 Extra Long Grain Basmati Rice',
+          body: 'The 1121 Basmati variety holds the international record for raw grain length. Raw unboiled 1121 grains average between 8.30 mm and 8.35 mm in length. Upon cooking, the grain elongates by 2.5 times its original size, exceeding 20 mm in cooked length without expanding in thickness. Moisture content is maintained strictly under 12.5% max to prevent fungal growth during ocean transit. Purity is guaranteed at 95% minimum with admixture capped under 5%.'
         },
         {
-          heading: '2. Golden Sella & Creamy Parboiled Basmati Processing',
-          body: 'Parboiled Golden Sella Basmati undergoes a controlled hydrostatic steam treatment before milling. This process drives natural vitamins and minerals into the grain core, hardening the starch matrix. Golden Sella rice will not break or turn mushy during large-scale commercial cooking in hotels, restaurants, and catering services. Creamy Sella offers a delicate translucent finish preferred in Middle Eastern pilafs.'
+          heading: '2. Processing Mechanics: Raw, Steam, Golden Sella & Creamy Sella',
+          body: 'Basmati rice is processed into four primary commercial finishes. White Raw Basmati is milled directly from aged paddy for maximum traditional aroma. Steam Basmati undergoes a mild steam bath prior to husking, strengthening the bran layer. Golden Sella Parboiled Basmati undergoes a full hydrostatic steam treatment that locks vitamins and minerals into the endosperm, turning the grain golden and preventing breakage during large-scale commercial catering. Creamy Sella offers a delicate ivory finish ideal for Middle Eastern mandi and kabsa dishes.'
         },
         {
-          heading: '3. Pusa 1509 & Traditional Basmati Varieties',
-          body: 'Pusa 1509 Basmati provides an economical high-yield alternative with an average raw grain length of 8.20 mm and rapid cooking time. Traditional Basmati delivers unmatched antique aroma for luxury culinary markets. All varieties undergo strict aging for 1 to 2 years in controlled grain silos to enhance aroma concentration.'
+          heading: '3. Pusa 1509 & Traditional Basmati Grain Characteristics',
+          body: 'Pusa 1509 Basmati is an early-maturing hybrid offering an average raw grain length of 8.20 mm and exceptional value. Traditional Basmati delivers unmatched antique floral fragrance preferred in luxury culinary dining. All Vishra Global Exports Basmati lots undergo 1 to 2 years of controlled silo aging to reduce internal moisture and concentrate natural key aroma compounds like 2-acetyl-1-pyrroline.'
         },
         {
-          heading: '4. APEDA Certification & Container Packaging Standards',
-          body: 'All Basmati consignments are inspected and certified by APEDA (Agricultural and Processed Food Products Export Development Authority). Packaging options include 5kg, 10kg, 20kg, 25kg, and 50kg PP, Non-Woven, or Jute bags with custom OEM private labeling. Containers are loaded with 24 to 25 Metric Tons in standard 20ft dry ocean freight containers with moisture absorber desiccant bags.'
+          heading: '4. Optical Sortex Clean Technology & Quality Grading Parameters',
+          body: 'Milled rice passes through multi-camera Buehler optical sorters that detect and reject discolored, yellow, chalky, or damaged grains at 10,000 grains per second. Final lab testing measures average grain length (AGL), length-to-breadth ratio (L/B ratio > 4.2), kernel damage (< 0.5%), and total broken grains (< 1.0%).'
+        },
+        {
+          heading: '5. Packaging Solutions: OEM Private Labeling & Retail Bags',
+          body: 'We provide comprehensive OEM private label packaging tailored for international supermarket chains and wholesale distributors. Options include 1kg, 2kg, 5kg, 10kg, 20kg, 25kg, and 50kg capacities in BOPP laminated bags, Non-Woven fabric bags, Polypropylene (PP) woven sacks, and traditional Jute bags with zip-lock closures.'
+        },
+        {
+          heading: '6. Shipping Logistics, APEDA Clearance & Container Loading',
+          body: 'Consignments are inspected and issued Phytosanitary and Quality Certificates by APEDA (Agricultural and Processed Food Products Export Development Authority). Standard 20ft Dry FCL containers are loaded with 24 to 25 Metric Tons of palletized or floor-stuffed rice bags. Container interiors are treated with ocean-grade desiccant bags to absorb ambient sea moisture.'
         }
       ],
       summary: 'Importing Indian Basmati Rice through Vishra Global Exports guarantees 100% Sortex clean, moisture-tested, APEDA-certified grain delivered safely to your port of destination.'
@@ -55,30 +68,35 @@ export const ARTICLES: Article[] = [
   {
     slug: 'sona-masuri-and-non-basmati-white-rice-exports',
     title: 'Sona Masuri & Non-Basmati White Rice Export Quality Standards from Andhra Pradesh',
-    excerpt: 'Explore why South Indian Sona Masuri and IR64 White Rice are preferred globally for everyday dining, commercial catering, and retail supermarket distribution.',
+    excerpt: 'Detailed analysis of South Indian Sona Masuri, IR64 White Rice, Swarna, and Ponni rice milling standards, nutrition profiles, and bulk container export logistics.',
     category: 'Agri Exports',
     date: 'July 25, 2026',
-    readTime: '7 min read',
-    author: 'Vishra Global Exports Trade Desk',
+    readTime: '10 min read',
+    author: 'Vishra Global Exports Agricultural Desk',
     image: '/products/photo-nonbasmati-section.svg',
-    keywords: ['sona masoori rice exporter', 'non basmati white rice', 'ir64 rice export india', 'andhra pradesh rice supplier'],
+    keywords: [
+      'vishra global', 'vishra exports', 'sona masoori rice exporter', 'non basmati white rice exporter', 
+      'ir64 white rice india', 'swarna rice exporter', 'andhra pradesh rice supplier', 
+      'double silky polished rice', 'low glycemic index rice', 'non basmati rice container load',
+      'kerala red matta rice export', 'black rice karuppu kavuni'
+    ],
     content: {
-      intro: 'Andhra Pradesh is recognized as the rice bowl of South India. Sona Masuri, a lightweight, low-starch aromatic medium grain rice, is cultivated extensively in the fertile Godavari river delta. Vishra Global Exports supplies double silky polished Sona Masuri, IR64, Swarna, and Ponni rice to international importers across the USA, GCC, Malaysia, and Europe.',
+      intro: 'Andhra Pradesh is recognized as the rice bowl of South India. Sona Masuri, a lightweight, low-starch aromatic medium grain rice, is cultivated extensively in the fertile Krishna and Godavari river deltas. Vishra Global Exports supplies double silky polished Sona Masuri, IR64, Swarna, and Ponni rice to international importers across the USA, GCC countries, Malaysia, Singapore, and Europe.',
       sections: [
         {
-          heading: '1. Sona Masuri Rice Health Benefits & Milling Standards',
-          body: 'Sona Masuri is highly valued for its health benefits, low glycemic index, and easy digestibility. Double silky polishing removes all outer husk residue while retaining natural grain sheen. Broken grain percentages are maintained under 5% max, with moisture capped at 13.0%.'
+          heading: '1. Sona Masuri Rice Characteristics & Health Advantages',
+          body: 'Sona Masuri is highly valued for its health benefits, low calorie content, and easy digestibility. Double silky polishing removes all outer husk residue while retaining natural grain sheen. Broken grain percentages are maintained under 5% max, with moisture capped at 13.0%.'
         },
         {
-          heading: '2. IR64 White Rice & Parboiled Swarna for Global Trade',
-          body: 'IR64 is a long-grain non-basmati rice variety widely consumed across Africa, Southeast Asia, and the Gulf regions. Known for its strong grain integrity, high volume expansion, and competitive bulk pricing. Parboiled Swarna provides extra firmness for industrial mess facilities.'
+          heading: '2. IR64 White Rice & Parboiled Swarna for Global Food Security',
+          body: 'IR64 is a long-grain non-basmati rice variety widely consumed across Africa, Southeast Asia, and the Gulf regions. Known for its strong grain integrity, high volume expansion, and competitive bulk pricing. Parboiled Swarna provides extra firmness for industrial catering facilities.'
         },
         {
           heading: '3. Speciality Heritage Varieties: Kerala Matta & Black Rice',
           body: 'We also export traditional GI-tagged rice including Kerala Red Matta (Palakkadan Matta), Karuppu Kavuni Black Rice, and Seeraga Samba. These specialty grains command high margins in health-conscious retail outlets worldwide.'
         },
         {
-          heading: '4. Quality Inspections & Port Logistics',
+          heading: '4. Quality Control & Container Loading Specs',
           body: 'Rice shipments undergo rigorous 100% optical camera Sortex cleaning to eliminate discolored or foreign grains. Cargo is loaded at Visakhapatnam and Krishnapatnam ports with complete fumigation and phytosanitary clearance.'
         }
       ],
@@ -87,19 +105,23 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: 'vannamei-white-shrimp-export-specifications',
-    title: 'Vannamei White Shrimp Export Specifications: HOSO, HLSO, PD & IQF Freezing',
-    excerpt: 'Detailed breakdown of farm-raised Litopenaeus Vannamei shrimp processing, count sizing (10/20 to 80/100), US-FDA compliance, and blast freezing.',
+    title: 'Vannamei White Shrimp Export Specifications: HOSO, HLSO, PD, PDTO & IQF Freezing',
+    excerpt: 'Complete technical breakdown of farm-raised Litopenaeus Vannamei shrimp processing, count sizing (10/20 to 80/100), US-FDA compliance, and blast freezing at -40°C.',
     category: 'Seafood Exports',
     date: 'July 24, 2026',
-    readTime: '8 min read',
-    author: 'Vishra Global Seafood Specialist',
-    image: '/products/vannamei-hoso.png',
-    keywords: ['vannamei shrimp exporter india', 'hoso hlso pd pdto shrimp', 'iqf shrimp export', 'seafood exporter eluru'],
+    readTime: '12 min read',
+    author: 'Vishra Global Seafood Technical Desk',
+    image: '/products/article_shrimp_banner.png',
+    keywords: [
+      'vishra global', 'vishra exports', 'vannamei white shrimp exporter', 'hoso hlso pd pdto shrimp', 
+      'iqf shrimp freezing -40c', 'seafood exporter eluru andhra pradesh', 'us fda shrimp inspection',
+      'bap 4 star certified shrimp', 'shrimp count size 10 20 21 25', 'shrimp protective glazing'
+    ],
     content: {
       intro: 'Litopenaeus Vannamei (Pacific White Shrimp) is India’s flagship marine export product. Cultivated in brackish water farms around Eluru, Andhra Pradesh, Indian Vannamei shrimp is prized worldwide for its sweet taste, firm texture, and uniform sizing.',
       sections: [
         {
-          heading: '1. Export Product Formats',
+          heading: '1. Export Product Formats (HOSO, HLSO, PD, PDTO, Butterfly)',
           body: 'We export Vannamei shrimp in various tailored specifications: Head-On Shell-On (HOSO), Headless Shell-On (HLSO), Easy Peel (back-cut deveined), Peeled & Deveined Tail-Off (PD), Peeled Tail-On (PDTO), Butterfly cut, and hand-threaded bamboo skewers.'
         },
         {
@@ -124,10 +146,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'Why wild-caught and eco-farmed Indian Black Tiger Prawns command premium pricing in gourmet restaurants, hotels, and seafood markets in Japan, USA, and Europe.',
     category: 'Seafood Exports',
     date: 'July 23, 2026',
-    readTime: '7 min read',
-    author: 'Vishra Global Seafood Specialist',
+    readTime: '10 min read',
+    author: 'Vishra Global Seafood Technical Desk',
     image: '/products/black-tiger.jpg',
-    keywords: ['black tiger prawns exporter', 'penaeus monodon india', 'jumbo prawns export', 'frozen tiger shrimp'],
+    keywords: [
+      'vishra global', 'vishra exports', 'black tiger prawns exporter', 'penaeus monodon india', 
+      'jumbo black tiger shrimp', 'frozen tiger prawns export', 'black tiger count sizes u5 6 8 8 12', 
+      'bay of bengal tiger shrimp', 'mpeda registered seafood exporter'
+    ],
     content: {
       intro: 'Penaeus Monodon, commonly known as Black Tiger Prawn, is the titan of the shrimp world. Recognized by its distinct dark stripes, thick carapace, and crunchy meat texture, Black Tiger prawns remain the preferred choice for high-end culinary dining.',
       sections: [
@@ -157,10 +183,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'Comprehensive guide to IQF frozen boneless fish fillets, white meat skinless portions, freshwater Rohu/Catla steaks, and sashimi-grade Yellowfin Tuna loins.',
     category: 'Seafood Exports',
     date: 'July 22, 2026',
-    readTime: '7 min read',
-    author: 'Vishra Global Seafood Specialist',
+    readTime: '10 min read',
+    author: 'Vishra Global Seafood Technical Desk',
     image: '/products/fish-white-meat.png',
-    keywords: ['boneless fish fillet export', 'tilapia skinless fillet', 'yellowfin tuna loins', 'pangasius fillet supplier'],
+    keywords: [
+      'vishra global', 'vishra exports', 'boneless fish fillet exporter', 'tilapia skinless fillet', 
+      'pangasius boneless fillet', 'yellowfin tuna loins export', 'rohu catla fish steaks', 
+      'iqf frozen fish portions', 'white meat fish fillets', 'red meat tuna saku blocks'
+    ],
     content: {
       intro: 'The demand for boneless, skinless fish portions is surging globally. Vishra Global Exports supplies both freshwater white meat fillets (Tilapia, Pangasius, Rohu) and deep-sea red meat steaks (Yellowfin Tuna, Swordfish).',
       sections: [
@@ -190,10 +220,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'Overview of Guntur Sannam/Teja red chili, finger turmeric, Tellicherry black pepper, green cardamom, and cumin seeds exported from Andhra Pradesh.',
     category: 'Agri Exports',
     date: 'July 21, 2026',
-    readTime: '6 min read',
+    readTime: '9 min read',
     author: 'Vishra Global Agro Desk',
-    image: '/products/spices.jpg',
-    keywords: ['guntur red chili export', 'turmeric finger supplier', 'indian spices exporter', 'black pepper export india'],
+    image: '/products/article_spices_banner.png',
+    keywords: [
+      'vishra global', 'vishra exports', 'guntur red chili exporter', 'sannam teja red chili', 
+      'turmeric finger exporter india', 'curcumin content 5 percent', 'tellicherry black pepper export', 
+      'green cardamom exporter', 'asta color value chili', 'spices board india certified'
+    ],
     content: {
       intro: 'India is the spice capital of the world, and Guntur in Andhra Pradesh is the global epicenter for red chili trade. Vishra Global Exports supplies whole, crushed, and ground export-grade spices directly from regional farm auctions.',
       sections: [
@@ -223,10 +257,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'Discover why Pearl Millet (Bajra), Finger Millet (Ragi), Sorghum (Jowar), Toor Dal, and Red Lentils are rapidly expanding in global healthy food markets.',
     category: 'Agri Exports',
     date: 'July 20, 2026',
-    readTime: '6 min read',
+    readTime: '8 min read',
     author: 'Vishra Global Agro Desk',
     image: '/products/millets.jpg',
-    keywords: ['indian millets export', 'ragi bajra jowar exporter', 'toor dal red lentils export', 'organic pulses india'],
+    keywords: [
+      'vishra global', 'vishra exports', 'indian millets exporter', 'ragi bajra jowar export', 
+      'toor dal red lentils export', 'organic pulses india', 'non gmo grains export', 
+      'gluten free superfood trade', 'pulses exporter andhra pradesh'
+    ],
     content: {
       intro: 'With the United Nations declaring the International Year of Millets, ancient Indian grains are experiencing explosive global demand. Vishra Global Exports exports machine-cleaned millets and pulses worldwide.',
       sections: [
@@ -256,10 +294,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'How Eluru’s proximity to Kolleru freshwater farms, Bay of Bengal coastal fisheries, and Visakhapatnam Port powers India’s largest seafood export corridor.',
     category: 'Trade & Logistics',
     date: 'July 19, 2026',
-    readTime: '6 min read',
+    readTime: '9 min read',
     author: 'Vishra Global Executive Team',
     image: '/products/photo-specialty-section.svg',
-    keywords: ['eluru seafood export', 'andhra pradesh aquaculture hub', 'kolleru lake fish farming', 'visakhapatnam port seafood'],
+    keywords: [
+      'vishra global', 'vishra exports', 'eluru seafood export capital', 'andhra pradesh aquaculture hub', 
+      'kolleru lake fish farming', 'visakhapatnam port seafood exporter', 'krishnapatnam port logistics', 
+      'india 65 percent shrimp export'
+    ],
     content: {
       intro: 'Eluru, located in the fertile West Godavari region of Andhra Pradesh, stands as the undisputed aquaculture capital of India. Over 65% of India’s total marine shrimp exports originate from this thriving region.',
       sections: [
@@ -289,10 +331,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'Technical guide on maintaining an unbroken cold chain, blast freezing protocols, digital temperature logging, and ocean reefer container transport.',
     category: 'Trade & Logistics',
     date: 'July 18, 2026',
-    readTime: '6 min read',
+    readTime: '9 min read',
     author: 'Vishra Global Technical Team',
     image: '/products/photo-parboiled-section.svg',
-    keywords: ['cold chain seafood export', 'iqf blast freezing -40c', 'reefer container transport', 'unbroken cold storage -18c'],
+    keywords: [
+      'vishra global', 'vishra exports', 'cold chain seafood export', 'iqf blast freezing -40c', 
+      'reefer container ocean freight', 'unbroken cold storage -18c', 'digital temperature logger seafood', 
+      'genset reefer container transport'
+    ],
     content: {
       intro: 'In frozen seafood export, the cold chain is the lifeline of quality. Even minor temperature fluctuations during transit can compromise product texture, flavor, and shelf life.',
       sections: [
@@ -322,10 +368,14 @@ export const ARTICLES: Article[] = [
     excerpt: 'Comprehensive breakdown of global food safety standards, lab test certificates, antibiotic testing (ELISA/LC-MS/MS), and statutory trade registrations.',
     category: 'Quality & Compliance',
     date: 'July 17, 2026',
-    readTime: '7 min read',
+    readTime: '10 min read',
     author: 'Vishra Global Compliance Officer',
     image: '/products/pulses.jpg',
-    keywords: ['us fda seafood certification', 'haccp apeda mpeda cert', 'antibiotic test elisa lcms', 'indian export documentation'],
+    keywords: [
+      'vishra global', 'vishra exports', 'us fda seafood facility registration', 'haccp food safety certification', 
+      'apeda export registration', 'mpeda marine products registration', 'elisa lcms antibiotic testing', 
+      'health certificate seafood export', 'phytosanitary certificate rice export'
+    ],
     content: {
       intro: 'Navigating international import regulations requires stringent food safety compliance. Vishra Global Exports operates under full statutory certification from Indian export authorities and international regulatory agencies.',
       sections: [
