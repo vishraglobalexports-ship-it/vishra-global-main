@@ -10,7 +10,7 @@ interface ArticlesContextType {
   resetArticles: () => Promise<void>;
 }
 
-const CURRENT_ARTICLES_VERSION = 'v2_articles_longform_custom_banners';
+const CURRENT_ARTICLES_VERSION = 'v4_articles_all_10_full_editor';
 
 const ArticlesContext = createContext<ArticlesContextType | undefined>(undefined);
 
@@ -39,7 +39,7 @@ export const ArticlesProvider: React.FC<{ children: ReactNode }> = ({ children }
     return defaultArticles;
   });
 
-  // Firestore Sync Listener for Articles
+  // Firestore Sync Listener for Articles with Auto-Sync for all 10 articles
   useEffect(() => {
     if (!db || !isFirebaseConfigured) return;
 
@@ -51,8 +51,42 @@ export const ArticlesProvider: React.FC<{ children: ReactNode }> = ({ children }
       (snapshot) => {
         if (!snapshot.empty) {
           const remoteArticles: Article[] = snapshot.docs.map((docSnap) => docSnap.data() as Article);
+
+          // Auto-purge if remote Firestore has incomplete or outdated articles (< 10)
+          if (remoteArticles.length < defaultArticles.length) {
+            console.log('Detected incomplete articles collection in Firestore. Auto-populating all 10 articles...');
+            try {
+              const batch = writeBatch(firestore);
+              snapshot.docs.forEach((docSnap) => batch.delete(docSnap.ref));
+              defaultArticles.forEach((art) => {
+                batch.set(doc(firestore, 'articles', art.slug), art);
+              });
+              batch.commit();
+            } catch (err) {
+              console.error('Failed to auto-sync articles to Firestore:', err);
+            }
+            setArticles(defaultArticles);
+            localStorage.setItem('vishra_articles', JSON.stringify(defaultArticles));
+            localStorage.setItem('vishra_articles_ver', CURRENT_ARTICLES_VERSION);
+            return;
+          }
+
           setArticles(remoteArticles);
           localStorage.setItem('vishra_articles', JSON.stringify(remoteArticles));
+          localStorage.setItem('vishra_articles_ver', CURRENT_ARTICLES_VERSION);
+        } else {
+          // If Firestore is empty, populate all 10 articles into Firestore
+          try {
+            const batch = writeBatch(firestore);
+            defaultArticles.forEach((art) => {
+              batch.set(doc(firestore, 'articles', art.slug), art);
+            });
+            batch.commit();
+          } catch (err) {
+            console.error('Failed to populate initial articles in Firestore:', err);
+          }
+          setArticles(defaultArticles);
+          localStorage.setItem('vishra_articles', JSON.stringify(defaultArticles));
           localStorage.setItem('vishra_articles_ver', CURRENT_ARTICLES_VERSION);
         }
       },

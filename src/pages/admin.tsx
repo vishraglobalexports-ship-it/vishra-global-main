@@ -70,7 +70,7 @@ function ImageUploader({
       <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">{label}</label>
       <div className="flex gap-3 items-start">
         {/* Preview */}
-        <div className="w-24 h-24 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a] flex items-center justify-center">
+        <div className="w-24 h-24 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a] flex items-center justify-center p-1">
           <img src={currentImage} alt="Preview" className="w-full h-full object-contain" />
         </div>
 
@@ -88,7 +88,7 @@ function ImageUploader({
         >
           <Upload className="w-6 h-6 text-slate-500 mx-auto mb-1.5" />
           <p className="text-xs text-slate-400">
-            <span className="text-teal-400 font-semibold">Click to upload banner</span> or drag & drop
+            <span className="text-amber-400 font-semibold">Click to upload image banner</span> or drag & drop
           </p>
           <p className="text-[10px] text-slate-600 mt-0.5">JPG, PNG, WebP (max 5MB)</p>
         </div>
@@ -154,7 +154,7 @@ function AddProductPanel({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Vannamei Shrimp"
-            className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600"
+            className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
           />
         </div>
 
@@ -165,7 +165,7 @@ function AddProductPanel({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Short product description for export buyers..."
             rows={3}
-            className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all resize-none placeholder:text-slate-600"
+            className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all resize-none"
           />
         </div>
 
@@ -173,7 +173,7 @@ function AddProductPanel({
           <Button
             onClick={handleSave}
             disabled={!canSave}
-            className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm h-11 px-8 disabled:opacity-40 disabled:cursor-not-allowed"
+            className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-sm h-11 px-8 disabled:opacity-40"
           >
             <Plus className="w-4 h-4 mr-2" /> Add Product
           </Button>
@@ -194,8 +194,7 @@ export default function AdminPage() {
   const { products, addProduct, updateProduct, deleteProduct, resetProducts, getSeafoodProducts, getAgriProducts, updateSubcategoryImage, getSubcategoryImage } = useProducts();
   const { articles, updateArticle, updateArticleBanner, resetArticles } = useArticles();
 
-  // Active Admin Tab State
-  const [activeTab, setActiveTab] = useState<'products' | 'articles'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'articles'>('articles');
 
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -233,21 +232,42 @@ export default function AdminPage() {
   // Product Edit State
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<{ name: string; description: string; image: string; category: 'seafood' | 'agri'; subcategory: string }>({ name: '', description: '', image: '', category: 'seafood', subcategory: '' });
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [resetConfirm, setResetConfirm] = useState(false);
 
-  // Article Edit State
+  // Full Article Edit State
   const [editingArticleSlug, setEditingArticleSlug] = useState<string | null>(null);
-  const [articleEditForm, setArticleEditForm] = useState<{ title: string; excerpt: string; readTime: string; keywordsStr: string }>({ title: '', excerpt: '', readTime: '', keywordsStr: '' });
+  const [articleEditForm, setArticleEditForm] = useState<{ 
+    title: string; 
+    category: 'Agri Exports' | 'Seafood Exports' | 'Trade & Logistics' | 'Quality & Compliance';
+    excerpt: string; 
+    readTime: string; 
+    keywordsStr: string;
+    intro: string;
+    summary: string;
+    sections: { heading: string; body: string }[];
+  }>({ 
+    title: '', 
+    category: 'Agri Exports',
+    excerpt: '', 
+    readTime: '', 
+    keywordsStr: '',
+    intro: '',
+    summary: '',
+    sections: []
+  });
 
   const startArticleEdit = (art: Article) => {
     setEditingArticleSlug(art.slug);
     setArticleEditForm({
       title: art.title,
+      category: art.category,
       excerpt: art.excerpt,
       readTime: art.readTime,
-      keywordsStr: art.keywords.join(', ')
+      keywordsStr: art.keywords.join(', '),
+      intro: art.content?.intro || '',
+      summary: art.content?.summary || '',
+      sections: art.content?.sections ? [...art.content.sections] : []
     });
   };
 
@@ -256,33 +276,36 @@ export default function AdminPage() {
     const keywordsArr = articleEditForm.keywordsStr.split(',').map(k => k.trim()).filter(Boolean);
     updateArticle(editingArticleSlug, {
       title: articleEditForm.title.trim(),
+      category: articleEditForm.category,
       excerpt: articleEditForm.excerpt.trim(),
       readTime: articleEditForm.readTime.trim(),
-      keywords: keywordsArr
+      keywords: keywordsArr,
+      content: {
+        intro: articleEditForm.intro.trim(),
+        summary: articleEditForm.summary.trim(),
+        sections: articleEditForm.sections.map(sec => ({
+          heading: sec.heading.trim(),
+          body: sec.body.trim()
+        }))
+      }
     });
     setEditingArticleSlug(null);
   };
 
-  const startEdit = (product: Product) => {
-    setEditingId(product.id);
-    setEditForm({ name: product.name, description: product.description, image: product.image, category: product.category, subcategory: product.subcategory || '' });
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditForm({ name: '', description: '', image: '', category: 'seafood', subcategory: '' });
-  };
-
-  const saveEdit = () => {
-    if (editingId === null) return;
-    updateProduct(editingId, {
-      name: editForm.name.trim(),
-      description: editForm.description.trim(),
-      image: editForm.image,
-      category: editForm.category,
-      subcategory: editForm.subcategory.trim() || undefined,
+  const updateSectionHeading = (index: number, val: string) => {
+    setArticleEditForm(f => {
+      const next = [...f.sections];
+      next[index] = { ...next[index], heading: val };
+      return { ...f, sections: next };
     });
-    cancelEdit();
+  };
+
+  const updateSectionBody = (index: number, val: string) => {
+    setArticleEditForm(f => {
+      const next = [...f.sections];
+      next[index] = { ...next[index], body: val };
+      return { ...f, sections: next };
+    });
   };
 
   const seafood = getSeafoodProducts();
@@ -298,7 +321,7 @@ export default function AdminPage() {
                 <ArrowLeft className="w-4 h-4" /> Back to Store
               </button>
             </Link>
-            <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 rounded-xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto mb-3">
               <ShieldAlert className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-extrabold text-white">Admin Authentication</h1>
@@ -321,7 +344,7 @@ export default function AdminPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all"
               />
             </div>
 
@@ -334,11 +357,11 @@ export default function AdminPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 transition-all"
+                className="w-full bg-[#181818] text-white border border-white/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 transition-all"
               />
             </div>
 
-            <Button type="submit" className="w-full bg-teal-500 hover:bg-teal-400 text-[#141414] font-extrabold text-sm h-12 rounded-xl mt-2">
+            <Button type="submit" className="w-full bg-amber-400 hover:bg-amber-300 text-[#141414] font-extrabold text-sm h-12 rounded-xl mt-2">
               Sign In to Admin Dashboard
             </Button>
           </form>
@@ -348,7 +371,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#181818] text-white font-sans selection:bg-teal-500 selection:text-black">
+    <main className="min-h-screen bg-[#181818] text-white font-sans selection:bg-amber-400 selection:text-black">
       
       {/* Top Header */}
       <div className="bg-[#202020] border-b border-white/10 sticky top-0 z-30 backdrop-blur-xl bg-[#202020]/90">
@@ -362,12 +385,20 @@ export default function AdminPage() {
             </Link>
             <div>
               <h1 className="text-base font-black text-white leading-tight">Vishra Global Admin</h1>
-              <p className="text-[10px] text-teal-400 font-semibold tracking-wider uppercase">Products & Articles Management</p>
+              <p className="text-[10px] text-amber-400 font-semibold tracking-wider uppercase">Products & All 10 Articles Manager</p>
             </div>
           </div>
 
           {/* Admin Navigation Tabs */}
           <div className="flex items-center bg-[#181818] p-1 rounded-xl border border-white/10">
+            <button
+              onClick={() => setActiveTab('articles')}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                activeTab === 'articles' ? 'bg-amber-400 text-[#141414] shadow-md' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5" /> All 10 Export Articles
+            </button>
             <button
               onClick={() => setActiveTab('products')}
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
@@ -375,14 +406,6 @@ export default function AdminPage() {
               }`}
             >
               <Fish className="w-3.5 h-3.5" /> Products & Sections
-            </button>
-            <button
-              onClick={() => setActiveTab('articles')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                activeTab === 'articles' ? 'bg-amber-400 text-[#141414] shadow-md' : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <FileText className="w-3.5 h-3.5" /> Articles & Banners (10)
             </button>
           </div>
 
@@ -398,30 +421,210 @@ export default function AdminPage() {
 
       <div className="container mx-auto px-4 md:px-6 py-8 space-y-8">
 
-        {/* ── TAB 1: PRODUCTS & SECTION BANNERS ── */}
+        {/* ── TAB 1: ALL 10 EXPORT ARTICLES & BANNERS MANAGER ── */}
+        {activeTab === 'articles' && (
+          <div className="space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+              <div>
+                <h2 className="text-xl font-extrabold text-white flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-amber-400" />
+                  All 10 Export Trade Articles & Banners ({articles.length} Loaded)
+                </h2>
+                <p className="text-xs text-slate-400">Full editing options available for all 10 articles (Titles, Text, Categories, SEO Tags, Sections & Banners)</p>
+              </div>
+              <Button onClick={() => resetArticles()} variant="outline" className="border-amber-400/40 text-amber-400 hover:bg-amber-400/10 text-xs font-bold shrink-0">
+                <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset All 10 Articles to Defaults
+              </Button>
+            </div>
+
+            <div className="space-y-6">
+              {articles.map((art, idx) => {
+                const isEditing = editingArticleSlug === art.slug;
+                return (
+                  <div key={art.slug} className="bg-[#222] rounded-2xl border border-white/10 p-6 space-y-5 shadow-xl">
+                    <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                      <div className="flex items-center gap-3">
+                        <span className="w-7 h-7 rounded-lg bg-amber-400/20 text-amber-400 border border-amber-400/30 font-mono text-xs font-bold flex items-center justify-center">
+                          #{idx + 1}
+                        </span>
+                        <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20 uppercase">
+                          {art.category}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-slate-400 font-mono">{art.readTime}</span>
+                        {!isEditing && (
+                          <Button onClick={() => startArticleEdit(art)} size="sm" className="bg-amber-400 hover:bg-amber-300 text-[#141414] text-xs font-bold">
+                            <Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit Full Article Content
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col lg:flex-row gap-6 items-start">
+                      
+                      {/* Banner Image Uploader */}
+                      <div className="w-full lg:w-1/3 shrink-0">
+                        <ImageUploader
+                          label={`Article Banner Image`}
+                          currentImage={art.image}
+                          onImageChange={(dataUrl) => updateArticleBanner(art.slug, dataUrl)}
+                        />
+                      </div>
+
+                      {/* Article Content & Editing Form */}
+                      <div className="flex-1 w-full space-y-4">
+                        {isEditing ? (
+                          <div className="space-y-5 bg-[#1a1a1a] p-6 rounded-2xl border border-amber-400/40 shadow-2xl">
+                            <h4 className="text-sm font-black text-amber-400 uppercase tracking-wider flex items-center gap-2 border-b border-white/10 pb-3">
+                              <Pencil className="w-4 h-4" /> Edit Article #{idx + 1}: {art.slug}
+                            </h4>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Article Title</label>
+                                <input 
+                                  type="text" 
+                                  value={articleEditForm.title} 
+                                  onChange={(e) => setArticleEditForm(f => ({ ...f, title: e.target.value }))}
+                                  className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Category</label>
+                                <select
+                                  value={articleEditForm.category}
+                                  onChange={(e) => setArticleEditForm(f => ({ ...f, category: e.target.value as any }))}
+                                  className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                                >
+                                  <option value="Agri Exports">Agri Exports</option>
+                                  <option value="Seafood Exports">Seafood Exports</option>
+                                  <option value="Trade & Logistics">Trade & Logistics</option>
+                                  <option value="Quality & Compliance">Quality & Compliance</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Read Time</label>
+                                <input 
+                                  type="text" 
+                                  value={articleEditForm.readTime} 
+                                  onChange={(e) => setArticleEditForm(f => ({ ...f, readTime: e.target.value }))}
+                                  className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-xs font-bold text-amber-400 uppercase mb-1">SEO Keywords (Comma Separated)</label>
+                                <input 
+                                  type="text" 
+                                  value={articleEditForm.keywordsStr} 
+                                  onChange={(e) => setArticleEditForm(f => ({ ...f, keywordsStr: e.target.value }))}
+                                  className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 font-mono"
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Excerpt / Summary Card</label>
+                              <textarea 
+                                value={articleEditForm.excerpt} 
+                                onChange={(e) => setArticleEditForm(f => ({ ...f, excerpt: e.target.value }))}
+                                rows={2}
+                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 resize-none"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Introductory Paragraph</label>
+                              <textarea 
+                                value={articleEditForm.intro} 
+                                onChange={(e) => setArticleEditForm(f => ({ ...f, intro: e.target.value }))}
+                                rows={3}
+                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 resize-none"
+                              />
+                            </div>
+
+                            {/* Section Editors */}
+                            <div className="space-y-4 pt-2">
+                              <label className="block text-xs font-bold text-amber-400 uppercase">Article Sections ({articleEditForm.sections.length})</label>
+                              {articleEditForm.sections.map((sec, secIdx) => (
+                                <div key={secIdx} className="p-4 rounded-xl bg-[#202020] border border-white/10 space-y-3">
+                                  <input 
+                                    type="text" 
+                                    value={sec.heading} 
+                                    onChange={(e) => updateSectionHeading(secIdx, e.target.value)}
+                                    placeholder={`Section ${secIdx + 1} Heading...`}
+                                    className="w-full bg-[#282828] text-amber-300 font-bold border border-white/10 rounded-lg px-3 py-1.5 text-xs"
+                                  />
+                                  <textarea 
+                                    value={sec.body} 
+                                    onChange={(e) => updateSectionBody(secIdx, e.target.value)}
+                                    rows={3}
+                                    placeholder={`Section ${secIdx + 1} Body Content...`}
+                                    className="w-full bg-[#282828] text-slate-200 border border-white/10 rounded-lg px-3 py-2 text-xs resize-none"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+
+                            <div>
+                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Quality Assurance Box Summary</label>
+                              <textarea 
+                                value={articleEditForm.summary} 
+                                onChange={(e) => setArticleEditForm(f => ({ ...f, summary: e.target.value }))}
+                                rows={2}
+                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 resize-none"
+                              />
+                            </div>
+
+                            <div className="flex gap-3 pt-3 border-t border-white/10">
+                              <Button onClick={saveArticleEdit} className="bg-amber-400 hover:bg-amber-300 text-[#141414] font-bold text-xs h-10 px-6">
+                                <Check className="w-4 h-4 mr-1.5" /> Save Article Changes
+                              </Button>
+                              <Button onClick={() => setEditingArticleSlug(null)} variant="outline" className="border-white/20 text-slate-300 text-xs h-10 px-6">
+                                Cancel
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            <h3 className="text-xl font-extrabold text-white leading-snug">{art.title}</h3>
+                            <p className="text-xs text-slate-300 leading-relaxed">{art.excerpt}</p>
+
+                            <div className="flex flex-wrap gap-1.5 pt-2">
+                              {art.keywords.map((kw, i) => (
+                                <span key={i} className="text-[10px] bg-white/5 text-amber-300/90 px-2.5 py-0.5 rounded-md border border-white/10 font-mono">
+                                  #{kw}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB 2: PRODUCTS & SECTION BANNERS ── */}
         {activeTab === 'products' && (
           <div className="space-y-8">
             <div className="flex items-center justify-between pb-4 border-b border-white/10">
               <div>
                 <h2 className="text-xl font-extrabold text-white">Product Catalog & Section Images</h2>
-                <p className="text-xs text-slate-400">Manage 18 default product cards and section banner images</p>
+                <p className="text-xs text-slate-400">Manage default product cards and section banner images</p>
               </div>
-              <div className="flex items-center gap-3">
-                {resetConfirm ? (
-                  <div className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 rounded-lg px-2.5 py-1.5">
-                    <span className="text-[11px] text-amber-300 font-semibold">Reset Products?</span>
-                    <button onClick={() => { resetProducts(); setResetConfirm(false); }} className="bg-amber-500 text-[#141414] rounded px-2 py-0.5 text-[11px] font-bold">Yes</button>
-                    <button onClick={() => setResetConfirm(false)} className="bg-white/10 text-white rounded px-2 py-0.5 text-[11px] font-bold">No</button>
-                  </div>
-                ) : (
-                  <button onClick={() => setResetConfirm(true)} className="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-amber-400">
-                    <RotateCcw className="w-4 h-4" />
-                  </button>
-                )}
-                <Button onClick={() => setShowAddPanel(!showAddPanel)} className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-xs">
-                  <Plus className="w-4 h-4 mr-1" /> Add Product
-                </Button>
-              </div>
+              <Button onClick={() => setShowAddPanel(!showAddPanel)} className="bg-teal-500 hover:bg-teal-400 text-[#141414] font-bold text-xs">
+                <Plus className="w-4 h-4 mr-1" /> Add Product
+              </Button>
             </div>
 
             {/* SEAFOOD SECTION */}
@@ -474,111 +677,6 @@ export default function AdminPage() {
                           onImageChange={(dataUrl) => updateSubcategoryImage('agri', subcat, dataUrl)}
                         />
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* ── TAB 2: EXPORT ARTICLES & BANNERS MANAGER ── */}
-        {activeTab === 'articles' && (
-          <div className="space-y-8">
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
-              <div>
-                <h2 className="text-xl font-extrabold text-white">Export Articles & Banners Manager</h2>
-                <p className="text-xs text-slate-400">Edit titles, excerpts, read time, SEO tags, and upload custom banners for all 10 articles</p>
-              </div>
-              <Button onClick={() => resetArticles()} variant="outline" className="border-amber-400/40 text-amber-400 hover:bg-amber-400/10 text-xs font-bold">
-                <RotateCcw className="w-3.5 h-3.5 mr-1.5" /> Reset Articles to Defaults
-              </Button>
-            </div>
-
-            <div className="space-y-6">
-              {articles.map((art) => {
-                const isEditing = editingArticleSlug === art.slug;
-                return (
-                  <div key={art.slug} className="bg-[#222] rounded-2xl border border-white/10 p-6 space-y-5 shadow-xl">
-                    <div className="flex flex-col lg:flex-row gap-6 items-start">
-                      
-                      {/* Banner Image Uploader */}
-                      <div className="w-full lg:w-1/3 shrink-0">
-                        <ImageUploader
-                          label={`Article Banner (${art.category})`}
-                          currentImage={art.image}
-                          onImageChange={(dataUrl) => updateArticleBanner(art.slug, dataUrl)}
-                        />
-                      </div>
-
-                      {/* Article Details & Editing Form */}
-                      <div className="flex-1 w-full space-y-4">
-                        {isEditing ? (
-                          <div className="space-y-4 bg-[#1a1a1a] p-4 rounded-xl border border-amber-400/30">
-                            <div>
-                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Article Title</label>
-                              <input 
-                                type="text" 
-                                value={articleEditForm.title} 
-                                onChange={(e) => setArticleEditForm(f => ({ ...f, title: e.target.value }))}
-                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">Excerpt / Summary</label>
-                              <textarea 
-                                value={articleEditForm.excerpt} 
-                                onChange={(e) => setArticleEditForm(f => ({ ...f, excerpt: e.target.value }))}
-                                rows={2}
-                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50 resize-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-bold text-amber-400 uppercase mb-1">SEO Keywords (Comma Separated)</label>
-                              <input 
-                                type="text" 
-                                value={articleEditForm.keywordsStr} 
-                                onChange={(e) => setArticleEditForm(f => ({ ...f, keywordsStr: e.target.value }))}
-                                className="w-full bg-[#242424] text-white border border-white/15 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400/50"
-                              />
-                            </div>
-                            <div className="flex gap-2 pt-2">
-                              <Button onClick={saveArticleEdit} className="bg-amber-400 text-[#141414] font-bold text-xs h-9 px-4">
-                                <Check className="w-3.5 h-3.5 mr-1" /> Save Article
-                              </Button>
-                              <Button onClick={() => setEditingArticleSlug(null)} variant="outline" className="border-white/20 text-slate-300 text-xs h-9 px-4">
-                                Cancel
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between gap-3">
-                              <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20 uppercase">
-                                {art.category}
-                              </span>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-slate-400 font-mono">{art.readTime}</span>
-                                <Button onClick={() => startArticleEdit(art)} size="sm" variant="outline" className="h-8 border-white/15 hover:border-amber-400 text-slate-300 hover:text-amber-400 text-xs font-bold">
-                                  <Pencil className="w-3.5 h-3.5 mr-1" /> Edit Details
-                                </Button>
-                              </div>
-                            </div>
-
-                            <h3 className="text-lg font-extrabold text-white leading-snug">{art.title}</h3>
-                            <p className="text-xs text-slate-300 leading-relaxed">{art.excerpt}</p>
-
-                            <div className="flex flex-wrap gap-1.5 pt-2">
-                              {art.keywords.map((kw, i) => (
-                                <span key={i} className="text-[10px] bg-white/5 text-amber-300/90 px-2.5 py-0.5 rounded-md border border-white/10 font-mono">
-                                  #{kw}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
                     </div>
                   </div>
                 );
