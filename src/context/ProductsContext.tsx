@@ -95,7 +95,7 @@ const defaultSeafoodProducts: Product[] = [
     description: "Raw boneless white meat skinless fillets & steaks (Tilapia, Pangasius, Rohu), IQF flash frozen under strict international hygiene standards.",
     image: "/products/fish-white-meat.png",
     category: "seafood",
-    subcategory: "Fish",
+    subcategory: "Fish Products",
     varieties: [
       "Tilapia Skinless Fillets",
       "Pangasius Boneless Fillets",
@@ -109,7 +109,7 @@ const defaultSeafoodProducts: Product[] = [
     description: "Raw sashimi & export grade boneless red meat steaks & loins (Yellowfin Tuna, Swordfish), ultra-flash frozen.",
     image: "/products/fish-red-meat.png",
     category: "seafood",
-    subcategory: "Fish",
+    subcategory: "Fish Products",
     varieties: [
       "Yellowfin Tuna Loins",
       "Sashimi Saku Blocks",
@@ -253,8 +253,24 @@ const defaultAgriProducts: Product[] = [
   }
 ];
 
-const allDefaultProducts = [...defaultSeafoodProducts, ...defaultAgriProducts];
-const CURRENT_VERSION = 'v13_purge_stale_subcat_images';
+const sanitizeSeafoodSubcategories = (items: Product[]): Product[] => {
+  return items.map(p => {
+    if (p.category === 'seafood') {
+      const sub = (p.subcategory || '').toLowerCase();
+      const name = (p.name || '').toLowerCase();
+      const isFish = sub.includes('fish') || sub.includes('tuna') || sub.includes('fillet') || 
+                     name.includes('fish') || name.includes('tuna') || name.includes('fillet') || name.includes('rohu') || name.includes('catla');
+      return {
+        ...p,
+        subcategory: isFish ? 'Fish Products' : 'Shrimp & Prawns'
+      };
+    }
+    return p;
+  });
+};
+
+const allDefaultProducts = sanitizeSeafoodSubcategories([...defaultSeafoodProducts, ...defaultAgriProducts]);
+const CURRENT_VERSION = 'v14_seafood_two_clean_rows';
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
@@ -267,7 +283,7 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
       try {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length === allDefaultProducts.length) {
-          return parsed;
+          return sanitizeSeafoodSubcategories(parsed);
         }
       } catch (e) {
         console.error('Failed to parse saved products:', e);
@@ -312,10 +328,12 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
       productsRef,
       (snapshot) => {
         if (!snapshot.empty) {
-          const remoteProducts: Product[] = snapshot.docs.map((docSnap) => {
+          const rawRemote: Product[] = snapshot.docs.map((docSnap) => {
             const data = docSnap.data() as Product;
             return { ...data, id: Number(data.id || docSnap.id) };
           });
+
+          const remoteProducts = sanitizeSeafoodSubcategories(rawRemote);
 
           // Strict purge if remote Firestore has outdated or mismatched documents
           const isOutdated = remoteProducts.length !== allDefaultProducts.length ||
@@ -402,13 +420,14 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const addProduct = async (productData: Omit<Product, 'id'>) => {
     const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-    const newProduct: Product = { ...productData, id: newId };
+    const rawNew: Product = { ...productData, id: newId };
+    const [sanitized] = sanitizeSeafoodSubcategories([rawNew]);
     
-    setProducts(prev => [...prev, newProduct]);
+    setProducts(prev => [...prev, sanitized]);
 
     if (db && isFirebaseConfigured) {
       try {
-        await setDoc(doc(db, 'products', String(newId)), newProduct);
+        await setDoc(doc(db, 'products', String(newId)), sanitized);
       } catch (err) {
         console.error('Failed to sync added product to Firestore:', err);
       }
@@ -416,13 +435,18 @@ export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   const updateProduct = async (id: number, updatedFields: Partial<Product>) => {
-    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updatedFields } : p));
+    setProducts(prev => {
+      const updatedList = prev.map(p => p.id === id ? { ...p, ...updatedFields } : p);
+      return sanitizeSeafoodSubcategories(updatedList);
+    });
 
     if (db && isFirebaseConfigured) {
       try {
         const target = products.find(p => p.id === id);
         if (target) {
-          await setDoc(doc(db, 'products', String(id)), { ...target, ...updatedFields });
+          const merged = { ...target, ...updatedFields };
+          const [sanitized] = sanitizeSeafoodSubcategories([merged]);
+          await setDoc(doc(db, 'products', String(id)), sanitized);
         }
       } catch (err) {
         console.error('Failed to sync updated product to Firestore:', err);
