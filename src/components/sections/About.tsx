@@ -245,6 +245,15 @@ export function About() {
               );
             })}
           </div>
+
+          {/* See More FAQs & Knowledge Hub Link */}
+          <div className="text-center pt-10">
+            <Link href="/faq">
+              <Button size="lg" className="h-13 px-8 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-[#141414] font-extrabold text-sm shadow-xl shadow-amber-400/20 cursor-pointer">
+                See More FAQs & Export Articles <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

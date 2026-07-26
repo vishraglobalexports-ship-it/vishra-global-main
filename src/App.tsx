@@ -6,6 +6,7 @@ import NotFound from '@/pages/not-found';
 import Home from '@/pages/home';
 import ProductsPage from '@/pages/products';
 import AboutPage from '@/pages/about';
+import FaqPage from '@/pages/faq';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { CartProvider } from '@/context/CartContext';
 import { ProductsProvider } from '@/context/ProductsContext';
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/products" component={ProductsPage} />
       <Route path="/about" component={AboutPage} />
+      <Route path="/faq" component={FaqPage} />
       <Route path="/admin-vishra-exports" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>

@@ -174,6 +174,12 @@ export function Navbar() {
               >
                 About Us
               </Link>
+              <Link 
+                href="/faq" 
+                className={`text-sm font-semibold transition-colors ${location === '/faq' ? 'text-teal-400' : 'text-slate-200 hover:text-teal-400'}`}
+              >
+                Export FAQ & Guides
+              </Link>
               
               {/* Cart Trigger */}
               <button
@@ -232,6 +238,7 @@ export function Navbar() {
             <Link href="/" onClick={() => setMobileMenuOpen(false)} className={`text-left py-2 font-semibold ${location === '/' ? 'text-teal-400' : 'text-slate-200'}`}>Home</Link>
             <Link href="/products" onClick={() => setMobileMenuOpen(false)} className={`text-left py-2 font-semibold ${location === '/products' ? 'text-teal-400' : 'text-slate-200'}`}>Products</Link>
             <Link href="/about" onClick={() => setMobileMenuOpen(false)} className={`text-left py-2 font-semibold ${location === '/about' ? 'text-teal-400' : 'text-slate-200'}`}>About Us</Link>
+            <Link href="/faq" onClick={() => setMobileMenuOpen(false)} className={`text-left py-2 font-semibold ${location === '/faq' ? 'text-teal-400' : 'text-slate-200'}`}>Export FAQ & Guides</Link>
             <Button onClick={scrollToContact} className="w-full bg-teal-400 text-[#202020] font-bold">
               Contact Us
             </Button>
