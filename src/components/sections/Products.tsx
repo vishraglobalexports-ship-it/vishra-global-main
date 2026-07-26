@@ -330,21 +330,47 @@ export function Products() {
               transition={{ duration: 0.3 }}
               className="space-y-12"
             >
-              {Array.from(new Set(filteredSeafood.map(p => p.subcategory || 'Seafood Products'))).map(subcat => {
-                const subProducts = filteredSeafood.filter(p => (p.subcategory || 'Seafood Products') === subcat);
+              {(() => {
+                const isFish = (p: Product) => {
+                  const sub = (p.subcategory || '').toLowerCase();
+                  const name = (p.name || '').toLowerCase();
+                  return sub.includes('fish') || sub.includes('tuna') || sub.includes('fillet') || 
+                         name.includes('fish') || name.includes('tuna') || name.includes('fillet') || name.includes('rohu') || name.includes('catla');
+                };
+
+                const shrimpProducts = filteredSeafood.filter(p => !isFish(p));
+                const fishProducts = filteredSeafood.filter(p => isFish(p));
+
                 return (
-                  <div key={subcat} className="space-y-6">
-                    <div className="flex items-center gap-3 pb-3 border-b border-teal-500/20">
-                      <div className="w-2.5 h-7 rounded-full bg-teal-400" />
-                      <h4 className="text-xl md:text-2xl font-extrabold text-white">{subcat}</h4>
-                      <span className="text-xs font-mono px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 font-bold">
-                        {subProducts.length} product(s)
-                      </span>
-                    </div>
-                    {renderProductGrid(subProducts)}
-                  </div>
+                  <>
+                    {shrimpProducts.length > 0 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center gap-3 pb-3 border-b border-teal-500/20">
+                          <div className="w-2.5 h-7 rounded-full bg-teal-400" />
+                          <h4 className="text-xl md:text-2xl font-extrabold text-white">Shrimp & Prawns</h4>
+                          <span className="text-xs font-mono px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 font-bold">
+                            {shrimpProducts.length} product(s)
+                          </span>
+                        </div>
+                        {renderProductGrid(shrimpProducts)}
+                      </div>
+                    )}
+
+                    {fishProducts.length > 0 && (
+                      <div className="space-y-6">
+                        <div className="flex items-center gap-3 pb-3 border-b border-teal-500/20">
+                          <div className="w-2.5 h-7 rounded-full bg-teal-400" />
+                          <h4 className="text-xl md:text-2xl font-extrabold text-white">Fish Products</h4>
+                          <span className="text-xs font-mono px-3 py-1 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 font-bold">
+                            {fishProducts.length} product(s)
+                          </span>
+                        </div>
+                        {renderProductGrid(fishProducts)}
+                      </div>
+                    )}
+                  </>
                 );
-              })}
+              })()}
 
               {filteredSeafood.length === 0 && (
                 <div className="text-center py-16">
