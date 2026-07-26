@@ -85,13 +85,13 @@ export default function ArticlesPage() {
                 className="rounded-3xl bg-[#222222] border border-white/10 overflow-hidden flex flex-col hover:border-amber-400/40 transition-all group shadow-xl"
               >
                 {/* Image */}
-                <div className="aspect-[16/10] overflow-hidden relative bg-[#181818]">
+                <div className="aspect-[16/10] overflow-hidden relative bg-gradient-to-b from-[#252525] to-[#181818] p-4 flex items-center justify-center">
                   <img 
                     src={art.image} 
                     alt={art.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-contain max-h-[180px] group-hover:scale-105 transition-transform duration-500 drop-shadow-md"
                   />
-                  <div className="absolute top-4 left-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 text-[11px] font-bold text-amber-400 uppercase tracking-wider">
+                  <div className="absolute top-3 left-3 bg-black/75 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10 text-[11px] font-bold text-amber-400 uppercase tracking-wider">
                     {art.category}
                   </div>
                 </div>

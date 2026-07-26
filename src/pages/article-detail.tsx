@@ -55,12 +55,12 @@ export default function ArticleDetailPage() {
       <section className="py-16 border-b border-white/10 bg-[#1a1a1a]">
         <div className="container mx-auto px-4 md:px-6 max-w-4xl">
           
-          {/* Featured Image */}
-          <div className="aspect-[16/9] rounded-3xl overflow-hidden mb-12 border border-white/10 shadow-2xl bg-[#202020]">
+          {/* Featured Banner Image */}
+          <div className="relative rounded-3xl overflow-hidden mb-12 border border-white/10 shadow-2xl bg-gradient-to-br from-[#252525] via-[#1d1d1d] to-[#151515] p-6 md:p-10 flex items-center justify-center min-h-[280px] md:min-h-[420px]">
             <img 
               src={article.image} 
               alt={article.title} 
-              className="w-full h-full object-cover"
+              className="w-full max-h-[380px] md:max-h-[440px] object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.6)]"
             />
           </div>
 
