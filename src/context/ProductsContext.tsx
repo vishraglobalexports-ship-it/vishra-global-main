@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { db, isFirebaseConfigured } from '@/lib/firebase';
+import { collection, onSnapshot, doc, setDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 
 export interface Product {
   id: number;
@@ -7,242 +9,510 @@ export interface Product {
   image: string;
   category: 'seafood' | 'agri';
   subcategory?: string;
+  varieties?: string[];
 }
 
 interface ProductsContextType {
   products: Product[];
-  addProduct: (product: Omit<Product, 'id'>) => void;
-  updateProduct: (id: number, updates: Partial<Omit<Product, 'id'>>) => void;
-  deleteProduct: (id: number) => void;
-  resetProducts: () => void;
+  addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
+  updateProduct: (id: number, product: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: number) => Promise<void>;
+  resetProducts: () => Promise<void>;
   getSeafoodProducts: () => Product[];
   getAgriProducts: () => Product[];
+  updateSubcategoryImage: (category: 'seafood' | 'agri', subcategory: string, image: string) => Promise<void>;
+  getSubcategoryImage: (category: 'seafood' | 'agri', subcategory: string, fallback: string) => string;
 }
 
 const defaultSeafoodProducts: Product[] = [
-  // --- Shrimp & Prawns ---
   {
     id: 1,
-    name: 'Vannamei White Shrimp',
-    description: 'HOSO, HLSO, EZ Peel, PD, PUD & Butterfly Cut. Sizes 10/20 to 100/200. Premium farm-raised from Eluru.',
-    image: '/products/vannamei.jpg',
-    category: 'seafood',
-    subcategory: 'Shrimp & Prawns'
+    name: "Vannamei HOSO",
+    description: "Head-On Shell-On raw whole fresh & frozen Vannamei white shrimp. Sizes 10/20 to 80/100.",
+    image: "/products/vannamei-hoso.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
   {
     id: 2,
-    name: 'Black Tiger Shrimp',
-    description: 'Wild-caught premium export grade. HOSO, HLSO, PDTO forms. Exceptional flavor, dark tiger stripes, and firm texture.',
-    image: '/products/black-tiger.jpg',
-    category: 'seafood',
-    subcategory: 'Shrimp & Prawns'
+    name: "Vannamei HLSO",
+    description: "Headless Shell-On raw Vannamei white shrimp. Block & IQF frozen, export grade.",
+    image: "/products/vannamei-hlso.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
   {
     id: 3,
-    name: 'Deep Sea Pink Prawns',
-    description: 'PUD and PDTO frozen packs. Naturally sweet marine flavor, ideal for retail and gourmet dining.',
-    image: '/products/vannamei.jpg',
-    category: 'seafood',
-    subcategory: 'Shrimp & Prawns'
+    name: "Vannamei Easy Peel",
+    description: "Raw shell-on back-cut deveined shrimp for effortless peeling and cooking.",
+    image: "/products/vannamei-easy-peel.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
-
-  // --- Freshwater & Marine Fish ---
   {
     id: 4,
-    name: 'Tilapia Fillets & Whole',
-    description: 'Whole gutted & IQF boneless skinless fillets. Mild flavor profile, CO treated or natural.',
-    image: '/products/tilapia.jpg',
-    category: 'seafood',
-    subcategory: 'Fish'
+    name: "Vannamei PD (Tail-Off)",
+    description: "Raw Peeled & Deveined tail-off translucent Vannamei white shrimp packs.",
+    image: "/products/vannamei-pd.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
   {
     id: 5,
-    name: 'Freshwater Rohu Fish',
-    description: 'Fresh and frozen whole, steaks & fillets. Sourced from pristine AP freshwater lakes under strict hygiene.',
-    image: '/products/rohu.jpg',
-    category: 'seafood',
-    subcategory: 'Fish'
+    name: "Vannamei PDTO (Tail-On)",
+    description: "Raw Peeled & Deveined Tail-On Vannamei shrimp. Premium retail & wholesale grade.",
+    image: "/products/vannamei-pdto.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
   {
     id: 6,
-    name: 'Catla Fish',
-    description: 'Frozen whole, IQF steak packs. Pristine freshwater source maintaining authentic taste and texture.',
-    image: '/products/catla.jpg',
-    category: 'seafood',
-    subcategory: 'Fish'
+    name: "Vannamei Butterfly Cut",
+    description: "Raw custom butterfly-cut tail-on jumbo Vannamei shrimp. Ideal for breading & frying.",
+    image: "/products/vannamei-butterfly.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
   {
     id: 7,
-    name: 'Pangasius Fillets & Steaks',
-    description: 'Boneless white & pink fillets, skinless, well-trimmed. Block frozen or IQF for global wholesale.',
-    image: '/products/pangasius.jpg',
-    category: 'seafood',
-    subcategory: 'Fish'
+    name: "Raw Shrimp Skewers",
+    description: "Raw tail-on Vannamei shrimp hand-threaded on bamboo skewers, ready for cooking.",
+    image: "/products/vannamei-skewers.png",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
   },
   {
     id: 8,
-    name: 'Yellowfin Tuna Loins & Steaks',
-    description: 'Sashimi-grade loins, saku blocks & steaks. Deep ocean ocean-caught, flash frozen ultra-fresh.',
-    image: '/products/tuna.jpg',
-    category: 'seafood',
-    subcategory: 'Fish'
+    name: "Black Tiger Shrimp",
+    description: "Raw wild-caught premium export grade. HOSO, HLSO, PDTO forms. Dark tiger stripes and firm texture.",
+    image: "/products/black-tiger.jpg",
+    category: "seafood",
+    subcategory: "Shrimp & Prawns"
+  },
+  {
+    id: 9,
+    name: "Boneless Fish (White Meat)",
+    description: "Raw boneless white meat skinless fillets & steaks (Tilapia, Pangasius, Rohu), IQF flash frozen under strict international hygiene standards.",
+    image: "/products/fish-white-meat.png",
+    category: "seafood",
+    subcategory: "Fish",
+    varieties: [
+      "Tilapia Skinless Fillets",
+      "Pangasius Boneless Fillets",
+      "Rohu Steaks",
+      "White Meat IQF Portion Packs"
+    ]
+  },
+  {
+    id: 10,
+    name: "Boneless Fish (Red Meat)",
+    description: "Raw sashimi & export grade boneless red meat steaks & loins (Yellowfin Tuna, Swordfish), ultra-flash frozen.",
+    image: "/products/fish-red-meat.png",
+    category: "seafood",
+    subcategory: "Fish",
+    varieties: [
+      "Yellowfin Tuna Loins",
+      "Sashimi Saku Blocks",
+      "Tuna Steaks",
+      "Swordfish Steaks"
+    ]
   }
 ];
 
 const defaultAgriProducts: Product[] = [
-  // --- Rice Varieties ---
-  {
-    id: 9,
-    name: 'Sona Masoori Raw Rice',
-    description: 'Aromatic medium-grain non-basmati rice. Lightweight, low starch, easy to digest. Directly from AP paddy fields.',
-    image: '/products/rice.jpg',
-    category: 'agri',
-    subcategory: 'Rice Varieties'
-  },
-  {
-    id: 10,
-    name: 'Sona Masoori Parboiled Rice',
-    description: 'Steam/parboiled 100% sortexed grains. High nutritional retention, firm texture, ideal for global catering.',
-    image: '/products/rice.jpg',
-    category: 'agri',
-    subcategory: 'Rice Varieties'
-  },
-  {
-    id: 11,
-    name: '100% Broken White Rice',
-    description: 'Clean double polished 100% broken rice. Moisture controlled (<14%), highly demanded for food processing.',
-    image: '/products/rice.jpg',
-    category: 'agri',
-    subcategory: 'Rice Varieties'
-  },
-  {
-    id: 12,
-    name: 'IR64 Parboiled Rice',
-    description: 'Long grain non-basmati rice. High grain length (6.0mm+), low broken percentage, major export favorite.',
-    image: '/products/rice.jpg',
-    category: 'agri',
-    subcategory: 'Rice Varieties'
-  },
-
-  // --- Spices & Herbs ---
-  {
-    id: 13,
-    name: 'Guntur Red Chili & Powder',
-    description: 'Stemless & with-stem S334 / Teja red chilis. Intense red color (ASTA 40-80) and fiery pungency.',
-    image: '/products/spices.jpg',
-    category: 'agri',
-    subcategory: 'Spices & Seasonings'
-  },
   {
     id: 14,
-    name: 'Pure Turmeric Finger & Powder',
-    description: 'High curcumin (3.5%+), vibrant golden yellow Nizamabad & Cuddapah turmeric fingers.',
-    image: '/products/spices.jpg',
-    category: 'agri',
-    subcategory: 'Spices & Seasonings'
+    name: "Basmati Rice",
+    description: "Extra Long Grain (8.30 mm+) premium Indian Basmati rice. 95% Min Purity, 12.5% Max Moisture. Exceptional grain elongation & natural aroma.",
+    image: "/products/photo-basmati-section.svg",
+    category: "agri",
+    subcategory: "Basmati Rice",
+    varieties: [
+      "1121 Basmati White",
+      "1121 Basmati Steam",
+      "1121 Golden Sella",
+      "1121 Creamy Sella",
+      "Pusa Basmati 1121",
+      "Pusa Basmati 1",
+      "1509 Basmati",
+      "1401 Basmati",
+      "Sugandha Basmati",
+      "Traditional Basmati"
+    ]
   },
   {
     id: 15,
-    name: 'Black Pepper & Cumin Seeds',
-    description: 'Tellicherry 550g/l garbled black pepper & Machine Cleaned Cumin seeds (Jeera) rich in essential oils.',
-    image: '/products/spices.jpg',
-    category: 'agri',
-    subcategory: 'Spices & Seasonings'
+    name: "Non-Basmati White Rice",
+    description: "High quality South Indian & Andhra Pradesh white rice. Double silky polished, 100% Sortex clean, 5% max broken.",
+    image: "/products/photo-nonbasmati-section.svg",
+    category: "agri",
+    subcategory: "Non-Basmati White Rice",
+    varieties: [
+      "Sona Masuri",
+      "IR 64 White",
+      "Swarna White",
+      "Kolam Rice",
+      "Ponni Rice",
+      "MTU 1010",
+      "HMT Kolam",
+      "Jaya Rice"
+    ]
   },
-
-  // --- Organic Millets & Superfoods ---
   {
     id: 16,
-    name: 'Pearl Millet (Bajra)',
-    description: 'High-protein gluten-free grain. Sun-dried, machine cleaned, rich in iron & magnesium.',
-    image: '/products/millets.jpg',
-    category: 'agri',
-    subcategory: 'Millets & Superfoods'
+    name: "Parboiled Rice",
+    description: "Steam parboiled golden & creamy sella rice with high volume expansion, firm texture, and non-sticky cooking.",
+    image: "/products/photo-parboiled-section.svg",
+    category: "agri",
+    subcategory: "Parboiled Rice",
+    varieties: [
+      "IR 64 Parboiled",
+      "Swarna Parboiled",
+      "Sona Masuri Parboiled",
+      "Ponni Parboiled",
+      "PR 11 Parboiled"
+    ]
   },
   {
     id: 17,
-    name: 'Finger Millet (Ragi)',
-    description: 'Calcium-rich red ragi grains. Finely processed & de-husked for export food processing.',
-    image: '/products/millets.jpg',
-    category: 'agri',
-    subcategory: 'Millets & Superfoods'
+    name: "Brown Rice",
+    description: "Unpolished whole grain healthy rice rich in natural dietary fiber, essential minerals, and rice bran oils.",
+    image: "/products/photo-brown-section.svg",
+    category: "agri",
+    subcategory: "Brown Rice",
+    varieties: [
+      "Brown Basmati",
+      "Brown Sona Masuri",
+      "Brown Ponni",
+      "Brown IR 64",
+      "Brown Kolam"
+    ]
   },
   {
     id: 18,
-    name: 'Foxtail & Little Millet',
-    description: 'Dehulled organic foxtail (Korralu) and little millet. Low GI superfood for healthy dietary markets.',
-    image: '/products/millets.jpg',
-    category: 'agri',
-    subcategory: 'Millets & Superfoods'
+    name: "Specialty & Heritage Rice",
+    description: "Traditional GI-tagged aromatic, medicinal red, black, and heritage Indian rice varieties.",
+    image: "/products/photo-specialty-section.svg",
+    category: "agri",
+    subcategory: "Specialty & Heritage Rice",
+    varieties: [
+      "Kerala Red Matta",
+      "Karuppu Kavuni Black Rice",
+      "Seeraga Samba (Jeera Samba)",
+      "Gobindobhog Rice",
+      "Ambemohar Rice",
+      "Pokkali Organic Rice"
+    ]
   },
-
-  // --- Pulses & Lentils ---
   {
     id: 19,
-    name: 'Toor Dal (Yellow Split Peas)',
-    description: 'Unpolished premium pigeon peas. High protein content, uniform grain size, fast cooking.',
-    image: '/products/pulses.jpg',
-    category: 'agri',
-    subcategory: 'Pulses & Lentils'
+    name: "Indian Export Spices",
+    description: "Authentic Indian whole & powdered export spices, rich in essential oils, natural color, and intense aroma.",
+    image: "/products/spices.jpg",
+    category: "agri",
+    subcategory: "Spices",
+    varieties: [
+      "Guntur Red Chili (Sannam / Teja)",
+      "Turmeric Finger & Powder",
+      "Tellicherry Black Pepper",
+      "Green Cardamom (7mm-8mm+)",
+      "Cumin Seeds (Jeera 99% Sortex)",
+      "Cloves, Cassia & Cinnamon"
+    ]
   },
   {
     id: 20,
-    name: 'Chana Dal & Urad Dal',
-    description: 'Bold Bengal gram split & whole/split black gram (Urad). Double-cleaned, zero artificial colors.',
-    image: '/products/pulses.jpg',
-    category: 'agri',
-    subcategory: 'Pulses & Lentils'
+    name: "Nutritious Organic Millets",
+    description: "High-protein, gluten-free organic superfood millets processed for international export.",
+    image: "/products/millets.jpg",
+    category: "agri",
+    subcategory: "Millets",
+    varieties: [
+      "Pearl Millet (Bajra)",
+      "Finger Millet (Ragi)",
+      "Foxtail Millet",
+      "Little Millet",
+      "Sorghum (Jowar)"
+    ]
+  },
+  {
+    id: 21,
+    name: "Premium Export Pulses & Lentils",
+    description: "Carefully machine-sorted, clean, moisture-controlled export grade Indian pulses and lentils.",
+    image: "/products/pulses.jpg",
+    category: "agri",
+    subcategory: "Pulses",
+    varieties: [
+      "Toor Dal (Yellow Split Peas)",
+      "Chana Dal",
+      "Urad Dal",
+      "Masoor Dal (Red Lentils)",
+      "Moong Dal",
+      "Rajma (Kidney Beans)"
+    ]
   }
 ];
 
-const allDefaults = [...defaultSeafoodProducts, ...defaultAgriProducts];
-
-const STORAGE_KEY = 'vishra-products';
+const allDefaultProducts = [...defaultSeafoodProducts, ...defaultAgriProducts];
+const CURRENT_VERSION = 'v12_fish_white_red_meat_strict';
 
 const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
-export const ProductsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [products, setProducts] = useState<Product[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
+    const savedVer = localStorage.getItem('vishra_products_ver');
+    const saved = localStorage.getItem('vishra_products');
+    
+    if (savedVer === CURRENT_VERSION && saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === allDefaultProducts.length) {
+          return parsed;
+        }
+      } catch (e) {
+        console.error('Failed to parse saved products:', e);
       }
-    } catch {}
-    return allDefaults;
+    }
+    
+    // Purge old local cache and initialize clean product set
+    try {
+      localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
+      localStorage.setItem('vishra_products', JSON.stringify(allDefaultProducts));
+    } catch (e) {
+      console.error('Failed to set localStorage:', e);
+    }
+    return allDefaultProducts;
   });
 
+  const [subcategoryImages, setSubcategoryImages] = useState<Record<string, string>>(() => {
+    const saved = localStorage.getItem('vishra_subcat_images');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved subcategory images:', e);
+      }
+    }
+    return {};
+  });
+
+  // Listen for products from Firebase
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+    if (!db || !isFirebaseConfigured) return;
+
+    const firestore = db;
+    const productsRef = collection(firestore, 'products');
+
+    const unsubscribe = onSnapshot(
+      productsRef,
+      (snapshot) => {
+        if (!snapshot.empty) {
+          const remoteProducts: Product[] = snapshot.docs.map((docSnap) => {
+            const data = docSnap.data() as Product;
+            return { ...data, id: Number(data.id || docSnap.id) };
+          });
+
+          // Strict purge if remote Firestore has outdated or mismatched documents
+          const isOutdated = remoteProducts.length !== allDefaultProducts.length ||
+            remoteProducts.some(p => p.id === 9 && p.name !== "Boneless Fish (White Meat)");
+
+          if (isOutdated) {
+            console.log('Detected outdated products collection in Firestore. Purging and resetting to clean 18-card catalog...');
+            try {
+              const batch = writeBatch(firestore);
+              snapshot.docs.forEach((docSnap) => batch.delete(docSnap.ref));
+              allDefaultProducts.forEach((p) => {
+                batch.set(doc(firestore, 'products', String(p.id)), p);
+              });
+              batch.commit();
+            } catch (err) {
+              console.error('Failed to auto-purge Firestore products:', err);
+            }
+            setProducts(allDefaultProducts);
+            localStorage.setItem('vishra_products', JSON.stringify(allDefaultProducts));
+            localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
+            return;
+          }
+
+          remoteProducts.sort((a, b) => a.id - b.id);
+          setProducts(remoteProducts);
+          localStorage.setItem('vishra_products', JSON.stringify(remoteProducts));
+          localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
+        }
+      },
+      (error) => {
+        // Silently fallback to local state if Firestore rules restrict access
+        if (error.code !== 'permission-denied') {
+          console.warn('Firestore snapshot listener info:', error.message);
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  // Listen for subcategory images from Firebase
+  useEffect(() => {
+    if (!db || !isFirebaseConfigured) return;
+
+    const unsubscribe = onSnapshot(
+      doc(db, 'settings', 'subcategoryImages'),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data() as Record<string, string>;
+          setSubcategoryImages(data);
+          try {
+            localStorage.setItem('vishra_subcat_images', JSON.stringify(data));
+          } catch (e) {
+            console.error('Failed to save subcategory images to localStorage:', e);
+          }
+        }
+      },
+      (error) => {
+        // Silently fallback to local state if Firestore rules restrict access
+        if (error.code !== 'permission-denied') {
+          console.warn('Firestore subcategory images listener info:', error.message);
+        }
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('vishra_products', JSON.stringify(products));
+    localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
   }, [products]);
 
-  const addProduct = (product: Omit<Product, 'id'>) => {
-    setProducts((prev) => {
-      const maxId = prev.reduce((max, p) => Math.max(max, p.id), 0);
-      return [...prev, { ...product, id: maxId + 1 }];
-    });
+  useEffect(() => {
+    try {
+      localStorage.setItem('vishra_subcat_images', JSON.stringify(subcategoryImages));
+    } catch (e) {
+      console.error('Failed to save subcategory images to localStorage:', e);
+    }
+  }, [subcategoryImages]);
+
+  const addProduct = async (productData: Omit<Product, 'id'>) => {
+    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    const newProduct: Product = { ...productData, id: newId };
+    
+    setProducts(prev => [...prev, newProduct]);
+
+    if (db && isFirebaseConfigured) {
+      try {
+        await setDoc(doc(db, 'products', String(newId)), newProduct);
+      } catch (err) {
+        console.error('Failed to sync added product to Firestore:', err);
+      }
+    }
   };
 
-  const updateProduct = (id: number, updates: Partial<Omit<Product, 'id'>>) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, ...updates } : p))
-    );
+  const updateProduct = async (id: number, updatedFields: Partial<Product>) => {
+    setProducts(prev => prev.map(p => p.id === id ? { ...p, ...updatedFields } : p));
+
+    if (db && isFirebaseConfigured) {
+      try {
+        const target = products.find(p => p.id === id);
+        if (target) {
+          await setDoc(doc(db, 'products', String(id)), { ...target, ...updatedFields });
+        }
+      } catch (err) {
+        console.error('Failed to sync updated product to Firestore:', err);
+      }
+    }
   };
 
-  const deleteProduct = (id: number) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+  const deleteProduct = async (id: number) => {
+    setProducts(prev => prev.filter(p => p.id !== id));
+
+    if (db && isFirebaseConfigured) {
+      try {
+        await deleteDoc(doc(db, 'products', String(id)));
+      } catch (err) {
+        console.error('Failed to sync deleted product to Firestore:', err);
+      }
+    }
   };
 
-  const resetProducts = () => {
-    setProducts(allDefaults);
-    localStorage.removeItem(STORAGE_KEY);
+  const resetProducts = async () => {
+    setProducts(allDefaultProducts);
+    setSubcategoryImages({});
+    localStorage.setItem('vishra_products_ver', CURRENT_VERSION);
+    localStorage.setItem('vishra_products', JSON.stringify(allDefaultProducts));
+
+    if (db && isFirebaseConfigured) {
+      try {
+        const firestore = db;
+        const batch = writeBatch(firestore);
+        allDefaultProducts.forEach(p => {
+          batch.set(doc(firestore, 'products', String(p.id)), p);
+        });
+        batch.set(doc(firestore, 'settings', 'subcategoryImages'), {});
+        await batch.commit();
+      } catch (err) {
+        console.error('Failed to reset products in Firestore:', err);
+      }
+    }
   };
 
-  const getSeafoodProducts = () => products.filter((p) => p.category === 'seafood');
-  const getAgriProducts = () => products.filter((p) => p.category === 'agri');
+  const getSeafoodProducts = () => products.filter(p => p.category === 'seafood');
+  const getAgriProducts = () => products.filter(p => p.category === 'agri');
+
+  const updateSubcategoryImage = async (category: 'seafood' | 'agri', subcategory: string, image: string) => {
+    const key = `${category}::${subcategory}`;
+    
+    setSubcategoryImages(prev => ({ ...prev, [key]: image }));
+
+    const defaultSubcat = category === 'seafood' ? 'Seafood Products' : 'Agro Products';
+    setProducts(prev => prev.map(p => {
+      const pSub = p.subcategory || defaultSubcat;
+      if (p.category === category && pSub === subcategory) {
+        return { ...p, image };
+      }
+      return p;
+    }));
+
+    if (db && isFirebaseConfigured) {
+      try {
+        const firestore = db;
+        const batch = writeBatch(firestore);
+        batch.set(doc(firestore, 'settings', 'subcategoryImages'), { [key]: image }, { merge: true });
+
+        const matchingProducts = products.filter(p => {
+          const pSub = p.subcategory || defaultSubcat;
+          return p.category === category && pSub === subcategory;
+        });
+
+        matchingProducts.forEach(p => {
+          batch.set(doc(firestore, 'products', String(p.id)), { ...p, image });
+        });
+
+        await batch.commit();
+      } catch (err) {
+        console.error('Failed to sync subcategory image to Firestore:', err);
+      }
+    }
+  };
+
+  const getSubcategoryImage = (category: 'seafood' | 'agri', subcategory: string, fallback: string): string => {
+    const key = `${category}::${subcategory}`;
+    return subcategoryImages[key] || fallback;
+  };
 
   return (
-    <ProductsContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, resetProducts, getSeafoodProducts, getAgriProducts }}>
+    <ProductsContext.Provider
+      value={{
+        products,
+        addProduct,
+        updateProduct,
+        deleteProduct,
+        resetProducts,
+        getSeafoodProducts,
+        getAgriProducts,
+        updateSubcategoryImage,
+        getSubcategoryImage
+      }}
+    >
       {children}
     </ProductsContext.Provider>
   );

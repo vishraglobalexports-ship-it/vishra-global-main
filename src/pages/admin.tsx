@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useProducts, Product } from '@/context/ProductsContext';
+import { useProducts, type Product } from '@/context/ProductsContext';
 import { Button } from '@/components/ui/button';
 import { 
   Trash2, Pencil, X, Check, ArrowLeft, Fish, Wheat, ShieldAlert, 
@@ -20,11 +20,37 @@ function ImageUploader({
 
   const processFile = (file: File) => {
     if (!file.type.startsWith('image/')) return;
+    
+    // Compress image using canvas to prevent localStorage overflow
     const reader = new FileReader();
     reader.onload = (e) => {
-      if (e.target?.result) {
-        onImageChange(e.target.result as string);
-      }
+      if (!e.target?.result) return;
+      const img = document.createElement('img');
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_SIZE = 800;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height && width > MAX_SIZE) {
+          height = (height * MAX_SIZE) / width;
+          width = MAX_SIZE;
+        } else if (height > MAX_SIZE) {
+          width = (width * MAX_SIZE) / height;
+          height = MAX_SIZE;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // Compress to JPEG at 0.7 quality (~50-100KB typically)
+        const compressed = canvas.toDataURL('image/jpeg', 0.7);
+        onImageChange(compressed);
+      };
+      img.src = e.target.result as string;
     };
     reader.readAsDataURL(file);
   };
@@ -39,7 +65,7 @@ function ImageUploader({
 
   return (
     <div className="space-y-2">
-      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Product Image</label>
+      <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wide">Section Image</label>
       <div className="flex gap-3 items-start">
         {/* Preview */}
         <div className="w-24 h-24 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a]">
@@ -88,17 +114,19 @@ function AddProductPanel({
 }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
   const [category, setCategory] = useState<'seafood' | 'agri'>('seafood');
   const [subcategory, setSubcategory] = useState('');
   const [categoryOpen, setCategoryOpen] = useState(false);
 
-  const canSave = name.trim() && description.trim() && image.trim();
+  const canSave = name.trim() && description.trim();
 
   const handleSave = () => {
     if (!canSave) return;
-    onAdd({ name: name.trim(), description: description.trim(), image: image.trim(), category, subcategory: subcategory.trim() || undefined });
-    setName(''); setDescription(''); setImage(''); setCategory('seafood'); setSubcategory('');
+    // Auto-assign the subcategory's existing image
+    const subcatName = subcategory.trim() || undefined;
+    const existingImage = existingProducts.find(p => p.category === category && p.subcategory === subcatName)?.image || '/logo.png';
+    onAdd({ name: name.trim(), description: description.trim(), image: existingImage, category, subcategory: subcatName });
+    setName(''); setDescription(''); setCategory('seafood'); setSubcategory('');
   };
 
   return (
@@ -143,19 +171,10 @@ function AddProductPanel({
           />
         </div>
 
-        {/* Image Upload */}
-        <ImageUploader currentImage={image || '/logo.png'} onImageChange={setImage} />
-
-        {/* Or enter path manually */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Or Enter Image Path</label>
-          <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="/products/my-product.jpg"
-            className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all placeholder:text-slate-600 font-mono text-xs"
-          />
+        {/* Info: Image is managed at subcategory level */}
+        <div className="bg-[#1a1a1a] border border-white/10 rounded-lg p-3 flex items-center gap-2">
+          <Image className="w-4 h-4 text-slate-500 shrink-0" />
+          <p className="text-xs text-slate-400">Image is managed at the section level. Change it from the section header in the product list below.</p>
         </div>
 
         {/* Subcategory Dropdown & Input */}
@@ -248,7 +267,7 @@ function AddProductPanel({
 }
 
 export default function AdminPage() {
-  const { products, addProduct, updateProduct, deleteProduct, resetProducts, getSeafoodProducts, getAgriProducts } = useProducts();
+  const { products, addProduct, updateProduct, deleteProduct, resetProducts, getSeafoodProducts, getAgriProducts, updateSubcategoryImage, getSubcategoryImage } = useProducts();
 
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -311,7 +330,7 @@ export default function AdminPage() {
     updateProduct(editingId, {
       name: editForm.name.trim(),
       description: editForm.description.trim(),
-      image: editForm.image.trim(),
+      image: editForm.image,
       category: editForm.category,
       subcategory: editForm.subcategory.trim() || undefined,
     });
@@ -354,6 +373,12 @@ export default function AdminPage() {
               </button>
             </div>
 
+            {/* Image Uploader */}
+            <ImageUploader 
+              currentImage={editForm.image || product.image} 
+              onImageChange={(newImage) => setEditForm(f => ({ ...f, image: newImage }))} 
+            />
+
             {/* Name */}
             <div>
               <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Product Name</label>
@@ -373,24 +398,6 @@ export default function AdminPage() {
                 onChange={(e) => setEditForm((f) => ({ ...f, description: e.target.value }))}
                 rows={3}
                 className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all resize-none"
-              />
-            </div>
-
-            {/* Image Upload */}
-            <ImageUploader 
-              currentImage={editForm.image} 
-              onImageChange={(dataUrl) => setEditForm((f) => ({ ...f, image: dataUrl }))} 
-            />
-
-            {/* Or path */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Or Enter Image Path</label>
-              <input
-                type="text"
-                value={editForm.image.startsWith('data:') ? '' : editForm.image}
-                onChange={(e) => setEditForm((f) => ({ ...f, image: e.target.value }))}
-                placeholder="/products/my-product.jpg"
-                className="w-full bg-[#1a1a1a] text-white border border-white/15 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all font-mono text-xs placeholder:text-slate-600"
               />
             </div>
 
@@ -480,23 +487,18 @@ export default function AdminPage() {
         ) : (
           /* ── VIEW MODE ── */
           <div className="flex items-center gap-4 p-4">
-            <div className="w-20 h-20 rounded-xl overflow-hidden border border-white/10 shrink-0 bg-[#1a1a1a]">
-              <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-            </div>
+            <div className="w-2 h-12 rounded-full bg-white/10 shrink-0" />
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <h4 className="text-base font-bold text-white truncate">{product.name}</h4>
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                  product.category === 'seafood'
-                    ? 'bg-teal-500/15 text-teal-400 border border-teal-500/30'
-                    : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
-                }`}>
-                  {product.category}
-                </span>
+                {product.subcategory && (
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-white/5 text-slate-500 border border-white/10">
+                    {product.subcategory}
+                  </span>
+                )}
               </div>
               <p className="text-sm text-slate-400 line-clamp-1">{product.description}</p>
-              <p className="text-[10px] text-slate-600 font-mono mt-1 truncate">{product.image.startsWith('data:') ? '📷 Uploaded image' : product.image}</p>
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
@@ -708,13 +710,31 @@ export default function AdminPage() {
           </div>
 
           <div className="space-y-8 pl-0 md:pl-2">
-            {Array.from(new Set(seafood.map(p => p.subcategory || 'General Seafood'))).map((subcat) => {
-              const subItems = seafood.filter(p => (p.subcategory || 'General Seafood') === subcat);
+            {Array.from(new Set(seafood.map(p => p.subcategory || 'Seafood Products'))).map((subcat) => {
+              const subItems = seafood.filter(p => (p.subcategory || 'Seafood Products') === subcat);
+              const sectionImage = getSubcategoryImage('seafood', subcat, subItems[0]?.image || '/logo.png');
               return (
                 <div key={subcat} className="space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-bold text-teal-400 uppercase tracking-wider bg-teal-500/5 px-3 py-1.5 rounded-lg border border-teal-500/15 w-fit">
-                    <span>{subcat}</span>
-                    <span className="text-[10px] text-slate-400 font-normal">({subItems.length})</span>
+                  {/* Section header with image upload */}
+                  <div className="bg-[#222] rounded-xl border border-teal-500/20 p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a]">
+                        <img src={sectionImage} alt={subcat} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-teal-400 uppercase tracking-wider">{subcat}</span>
+                          <span className="text-[10px] text-slate-400 font-normal">({subItems.length} varieties)</span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mt-0.5">This image represents all varieties in this section</p>
+                      </div>
+                      <div className="shrink-0">
+                        <ImageUploader
+                          currentImage={sectionImage}
+                          onImageChange={(dataUrl) => updateSubcategoryImage('seafood', subcat, dataUrl)}
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div className="space-y-3">
                     <AnimatePresence>
@@ -743,13 +763,31 @@ export default function AdminPage() {
           </div>
 
           <div className="space-y-8 pl-0 md:pl-2">
-            {Array.from(new Set(agri.map(p => p.subcategory || 'General Agricultural'))).map((subcat) => {
-              const subItems = agri.filter(p => (p.subcategory || 'General Agricultural') === subcat);
+            {Array.from(new Set(agri.map(p => p.subcategory || 'Agro Products'))).map((subcat) => {
+              const subItems = agri.filter(p => (p.subcategory || 'Agro Products') === subcat);
+              const sectionImage = getSubcategoryImage('agri', subcat, subItems[0]?.image || '/logo.png');
               return (
                 <div key={subcat} className="space-y-3">
-                  <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider bg-amber-500/5 px-3 py-1.5 rounded-lg border border-amber-500/15 w-fit">
-                    <span>{subcat}</span>
-                    <span className="text-[10px] text-slate-400 font-normal">({subItems.length})</span>
+                  {/* Section header with image upload */}
+                  <div className="bg-[#222] rounded-xl border border-amber-500/20 p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/15 shrink-0 bg-[#1a1a1a]">
+                        <img src={sectionImage} alt={subcat} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-amber-400 uppercase tracking-wider">{subcat}</span>
+                          <span className="text-[10px] text-slate-400 font-normal">({subItems.length} varieties)</span>
+                        </div>
+                        <p className="text-[10px] text-slate-500 mt-0.5">This image represents all varieties in this section</p>
+                      </div>
+                      <div className="shrink-0">
+                        <ImageUploader
+                          currentImage={sectionImage}
+                          onImageChange={(dataUrl) => updateSubcategoryImage('agri', subcat, dataUrl)}
+                        />
+                      </div>
+                    </div>
                   </div>
                   <div className="space-y-3">
                     <AnimatePresence>
