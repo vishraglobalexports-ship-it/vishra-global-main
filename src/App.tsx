@@ -7,6 +7,8 @@ import Home from '@/pages/home';
 import ProductsPage from '@/pages/products';
 import AboutPage from '@/pages/about';
 import FaqPage from '@/pages/faq';
+import ArticlesPage from '@/pages/articles';
+import ArticleDetailPage from '@/pages/article-detail';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { CartProvider } from '@/context/CartContext';
 import { ProductsProvider } from '@/context/ProductsContext';
@@ -23,6 +25,8 @@ function Router() {
       <Route path="/products" component={ProductsPage} />
       <Route path="/about" component={AboutPage} />
       <Route path="/faq" component={FaqPage} />
+      <Route path="/articles" component={ArticlesPage} />
+      <Route path="/articles/:slug" component={ArticleDetailPage} />
       <Route path="/admin-vishra-exports" component={AdminPage} />
       <Route component={NotFound} />
     </Switch>
