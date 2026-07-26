@@ -1,0 +1,21 @@
+{
+  "short_name": "Vishra Global",
+  "name": "Vishra Global Exports - Premier Indian Seafood & Agro Exporter",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/favicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#181818",
+  "theme_color": "#181818",
+  "display": "standalone",
+  "orientation": "portrait"
+}
