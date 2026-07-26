@@ -86,7 +86,47 @@
     }
     </script>
 
-    <!-- Structured Data 2: WebSite Schema with Search Engine Directives -->
+    <!-- Structured Data 2: Google Chrome Sub-Page Site Navigation Sitelinks Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "@id": "https://vishraglobal.com/#sitelinks",
+      "name": "Vishra Global Exports Sub Pages Navigation",
+      "itemListElement": [
+        {
+          "@type": "SiteNavigationElement",
+          "position": 1,
+          "name": "Export Products Catalog",
+          "description": "Browse 1121 Basmati Rice, Sona Masuri, Vannamei White Shrimp, Black Tiger Prawns, Boneless Fish Fillets & Spices",
+          "url": "https://vishraglobal.com/products"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 2,
+          "name": "About Vishra Global Exports",
+          "description": "Company foundation, Eluru seafood hub heritage, and FDA/HACCP compliance",
+          "url": "https://vishraglobal.com/about"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 3,
+          "name": "20 Trade FAQs",
+          "description": "Frequently asked questions covering rice specifications, cold chain, FDA, and shipping terms",
+          "url": "https://vishraglobal.com/faq"
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "position": 4,
+          "name": "10 Export Knowledge Articles",
+          "description": "Technical trade articles on Indian Basmati, seafood standards, and reefer shipping",
+          "url": "https://vishraglobal.com/articles"
+        }
+      ]
+    }
+    </script>
+
+    <!-- Structured Data 3: WebSite Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -101,7 +141,7 @@
     }
     </script>
 
-    <!-- Structured Data 3: BreadcrumbList Technical Schema -->
+    <!-- Structured Data 4: BreadcrumbList Technical Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -124,60 +164,24 @@
           "position": 3,
           "name": "About Vishra Global Exports",
           "item": "https://vishraglobal.com/about"
-        }
-      ]
-    }
-    </script>
-
-    <!-- Structured Data 4: Product Catalog Knowledge Graph Schema -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Vishra Global Exports Featured Product Range",
-      "description": "Export grade Indian Agri & Seafood product catalog",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Indian Basmati Rice Range (1121, Pusa 1509, Sella)",
-          "url": "https://vishraglobal.com/products"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Non-Basmati White Rice (Sona Masuri, IR64, Swarna)",
-          "url": "https://vishraglobal.com/products"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Vannamei White Shrimp (HOSO, HLSO, Easy Peel, PD, PDTO, Butterfly)",
-          "url": "https://vishraglobal.com/products"
         },
         {
           "@type": "ListItem",
           "position": 4,
-          "name": "Black Tiger Shrimp & Prawns",
-          "url": "https://vishraglobal.com/products"
+          "name": "20 Trade FAQs",
+          "item": "https://vishraglobal.com/faq"
         },
         {
           "@type": "ListItem",
           "position": 5,
-          "name": "Boneless Fish Fillets & Steaks (White Meat & Red Meat)",
-          "url": "https://vishraglobal.com/products"
-        },
-        {
-          "@type": "ListItem",
-          "position": 6,
-          "name": "Indian Export Spices (Guntur Red Chili, Turmeric, Pepper, Cardamom)",
-          "url": "https://vishraglobal.com/products"
+          "name": "Export Articles Hub",
+          "item": "https://vishraglobal.com/articles"
         }
       ]
     }
     </script>
 
-    <!-- Structured Data 5: FAQPage Schema for Google Search Rich Q&A Accordions -->
+    <!-- Structured Data 5: 20 FAQPage Schema for Google Search Accordions -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -193,15 +197,15 @@
         },
         {
           "@type": "Question",
-          "name": "Where is Vishra Global Exports located?",
+          "name": "Where is Vishra Global Exports located in India?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Vishra Global Exports is headquartered in Eluru, Andhra Pradesh, India — the premier aquaculture and agricultural processing hub of South India, with direct transport access to Visakhapatnam (Vizag) and Krishnapatnam ports."
+            "text": "Vishra Global Exports is headquartered in Eluru, Andhra Pradesh, India — the premier aquaculture and agricultural processing hub of South India, with direct logistics access to Visakhapatnam (Vizag) and Krishnapatnam ports."
           }
         },
         {
           "@type": "Question",
-          "name": "What quality certifications does Vishra Global Exports hold?",
+          "name": "What quality certifications and compliance standards does Vishra Global Exports hold?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "All export shipments are processed under US-FDA facility registration, EU export certification, HACCP food safety standards, BAP 4-Star aquaculture practices, MPEDA registration, and APEDA standards with complete batch laboratory testing."
@@ -209,10 +213,42 @@
         },
         {
           "@type": "Question",
-          "name": "How can international importers place bulk export orders with Vishra Global Exports?",
+          "name": "What cold-chain storage and freezing technology is used for seafood exports?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We utilize state-of-the-art Individual Quick Freezing (IQF) at -40°C and maintain unbroken cold storage at a continuous -18°C from processing facilities in Eluru directly to ocean reefer containers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How can international buyers request quotations or place bulk export orders?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "International buyers can request instant trade quotes via our website Enquiry forms, email us directly at vishraglobalexports@gmail.com, or chat on WhatsApp at +91 91212 97999."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the grain length and expansion ratio of 1121 Basmati Rice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our 1121 Basmati Rice boasts an average grain length of 8.30 mm to 8.35 mm raw, elongating up to 2.5x upon cooking (over 20 mm). It features 95% minimum purity, 12.5% maximum moisture, and zero chalky grains."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What formats of Vannamei White Shrimp are available for export?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We export Vannamei Shrimp in HOSO, HLSO, Easy Peel, PD, PDTO, Butterfly Cut, and Hand-Threaded Raw Skewers."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What sea ports are used for ocean freight dispatch?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cargo is dispatched primarily via Port Visakhapatnam (Vizag) and Krishnapatnam Port in Andhra Pradesh."
           }
         }
       ]

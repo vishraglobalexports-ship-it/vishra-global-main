@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { BookOpen, Search, ArrowRight, Calendar, Clock, Tag, User, ShieldCheck } from 'lucide-react';
+import { BookOpen, Search, ArrowRight, Calendar, Clock, Tag, User, ShieldCheck, HelpCircle } from 'lucide-react';
 import { Navbar } from '@/components/sections/Navbar';
 import { Footer } from '@/components/sections/Footer';
 import { Button } from '@/components/ui/button';
