@@ -24,14 +24,23 @@ export function Footer() {
             <p className="text-slate-400 text-sm leading-relaxed max-w-md mb-4">
               Vishra Global Exports (Vishra Exports) — Govt-recognized Indian exporter of Premium Basmati Rice, Sona Masuri Rice, Vannamei White Shrimp, Black Tiger Prawns, Boneless Fish Fillets & Guntur Spices. Headquartered in Eluru, Andhra Pradesh, India.
             </p>
-            {/* Government & Industry Association Backlinks */}
-            <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 font-semibold pt-2">
-              <span className="text-teal-400 font-bold uppercase">Export Affiliations:</span>
-              <a href="https://apeda.gov.in" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 underline transition-colors">APEDA India</a>
-              <span>•</span>
-              <a href="https://mpeda.gov.in" target="_blank" rel="noopener noreferrer" className="hover:text-teal-400 underline transition-colors">MPEDA Marine</a>
-              <span>•</span>
-              <a href="https://www.fieo.org" target="_blank" rel="noopener noreferrer" className="hover:text-amber-400 underline transition-colors">FIEO Trade</a>
+            {/* Government & Industry Association Backlinks & Trade Registry Citations */}
+            <div className="pt-3">
+              <span className="text-xs font-extrabold text-amber-400 uppercase tracking-widest block mb-2">Govt Registered Trade Citations & Backlinks:</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <a href="https://apeda.gov.in" target="_blank" rel="noopener noreferrer" className="bg-white/5 hover:bg-amber-400/10 border border-white/10 hover:border-amber-400/40 text-slate-300 hover:text-amber-400 px-3 py-1.5 rounded-lg transition-all font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400"></span> APEDA Govt Registry
+                </a>
+                <a href="https://mpeda.gov.in" target="_blank" rel="noopener noreferrer" className="bg-white/5 hover:bg-teal-400/10 border border-white/10 hover:border-teal-400/40 text-slate-300 hover:text-teal-400 px-3 py-1.5 rounded-lg transition-all font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-teal-400"></span> MPEDA Marine Authority
+                </a>
+                <a href="https://www.fieo.org" target="_blank" rel="noopener noreferrer" className="bg-white/5 hover:bg-amber-400/10 border border-white/10 hover:border-amber-400/40 text-slate-300 hover:text-amber-400 px-3 py-1.5 rounded-lg transition-all font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-amber-400"></span> FIEO Trade Federation
+                </a>
+                <a href="https://www.fda.gov" target="_blank" rel="noopener noreferrer" className="bg-white/5 hover:bg-blue-400/10 border border-white/10 hover:border-blue-400/40 text-slate-300 hover:text-blue-400 px-3 py-1.5 rounded-lg transition-all font-semibold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-400"></span> US-FDA Seafood Registered
+                </a>
+              </div>
             </div>
           </div>
 
